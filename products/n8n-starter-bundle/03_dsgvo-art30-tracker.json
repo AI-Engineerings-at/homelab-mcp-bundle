@@ -1,0 +1,91 @@
+{
+  "name": "DSGVO Art.30 Verarbeitungsverzeichnis Tracker",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dsgvo-art30",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook: Neue Verarbeitung",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "leftValue": "", "typeValidation": "strict"},
+          "conditions": [
+            {
+              "id": "check-required",
+              "leftValue": "={{ $json.body.zweck }}",
+              "rightValue": "",
+              "operator": {"type": "string", "operation": "notEmpty"}
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "validate-input",
+      "name": "Pflichtfelder prüfen",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\nconst now = new Date().toISOString();\nconst id = 'ART30-' + Date.now();\n\nreturn [{\n  json: {\n    id,\n    erstellt_am: now,\n    verantwortlicher: body.verantwortlicher || 'Nicht angegeben',\n    zweck: body.zweck,\n    kategorien_betroffener: body.kategorien_betroffener || [],\n    datenkategorien: body.datenkategorien || [],\n    empfaenger: body.empfaenger || [],\n    drittland_transfer: body.drittland_transfer || false,\n    loeschfrist: body.loeschfrist || 'Nicht definiert',\n    technische_massnahmen: body.technische_massnahmen || [],\n    rechtsgrundlage: body.rechtsgrundlage || 'Art. 6 Abs. 1 lit. a DSGVO',\n    status: 'aktiv',\n    markdown: `## ${id}\\n**Zweck**: ${body.zweck}\\n**Rechtsgrundlage**: ${body.rechtsgrundlage || 'Art. 6 Abs. 1 lit. a DSGVO'}\\n**Erstellt**: ${now}\\n**Löschfrist**: ${body.loeschfrist || 'Nicht definiert'}`\n  }\n}];"
+      },
+      "id": "prepare-record",
+      "name": "Art.30 Eintrag erstellen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 240]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"id\": $json.id, \"message\": \"Verarbeitungsverzeichnis-Eintrag erstellt\", \"eintrag\": $json } }}"
+      },
+      "id": "respond-success",
+      "name": "Antwort: Erfolg",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 240]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseCode": 400,
+        "responseBody": "={ \"success\": false, \"error\": \"Pflichtfeld 'zweck' fehlt\" }"
+      },
+      "id": "respond-error",
+      "name": "Antwort: Fehler",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 380]
+    }
+  ],
+  "connections": {
+    "Webhook: Neue Verarbeitung": {
+      "main": [[{"node": "Pflichtfelder prüfen", "type": "main", "index": 0}]]
+    },
+    "Pflichtfelder prüfen": {
+      "main": [
+        [{"node": "Art.30 Eintrag erstellen", "type": "main", "index": 0}],
+        [{"node": "Antwort: Fehler", "type": "main", "index": 0}]
+      ]
+    },
+    "Art.30 Eintrag erstellen": {
+      "main": [[{"node": "Antwort: Erfolg", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {"executionOrder": "v1"},
+  "meta": {
+    "description": "DSGVO Art.30 Verarbeitungsverzeichnis — Webhook-API zum Erfassen von Verarbeitungstätigkeiten gem. DSGVO Art. 30. POST an /webhook/dsgvo-art30 mit JSON-Body.",
+    "readme": "## DSGVO Art.30 Tracker\n\n### Verwendung\n```bash\ncurl -X POST https://your-n8n.com/webhook/dsgvo-art30 \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"zweck\": \"Kundenverwaltung\", \"rechtsgrundlage\": \"Art. 6 Abs. 1 lit. b DSGVO\", \"loeschfrist\": \"3 Jahre nach Vertragsende\"}'\n```\n\n### Pflichtfelder\n- `zweck` — Zweck der Verarbeitungstätigkeit\n\n### Optionale Felder\n- `verantwortlicher`, `kategorien_betroffener`, `datenkategorien`, `empfaenger`, `drittland_transfer`, `loeschfrist`, `technische_massnahmen`, `rechtsgrundlage`"
+  }
+}
