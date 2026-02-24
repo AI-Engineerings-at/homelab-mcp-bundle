@@ -1,0 +1,53 @@
+{
+  "dashboard": {
+    "panels": [
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "targets": [
+          {
+            "expr": "rate(node_network_receive_bytes_total[5m])",
+            "legendFormat": "{{nodename}}"
+          }
+        ],
+        "title": "Network Receive (bytes/s)",
+        "type": "timeseries"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "id": 2,
+        "targets": [
+          {
+            "expr": "rate(node_network_transmit_bytes_total[5m])",
+            "legendFormat": "{{nodename}}"
+          }
+        ],
+        "title": "Network Transmit (bytes/s)",
+        "type": "timeseries"
+      }
+    ],
+    "tags": [
+      "network"
+    ],
+    "title": "Network Overview",
+    "version": 1
+  },
+  "__inputs": [],
+  "__requires": [],
+  "_export_info": {
+    "source": "Grafana Homelab (10.40.10.80:3000)",
+    "exported_by": "lisa01",
+    "date": "2026-02-24",
+    "folder": "General"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "dashboard": {
+    "panels": [
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "targets": [
+          {
+            "expr": "count(ALERTS{alertstate=\"firing\"}) or vector(0)"
+          }
+        ],
+        "title": "Firing Alerts",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 8,
+          "y": 0
+        },
+        "id": 2,
+        "targets": [
+          {
+            "expr": "count(ALERTS{alertstate=\"pending\"}) or vector(0)"
+          }
+        ],
+        "title": "Pending Alerts",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 16,
+          "y": 0
+        },
+        "id": 3,
+        "targets": [
+          {
+            "expr": "count(prometheus_rule_group_rules)"
+          }
+        ],
+        "title": "Total Alert Rules",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 12,
+          "w": 24,
+          "x": 0,
+          "y": 4
+        },
+        "id": 4,
+        "targets": [
+          {
+            "expr": "ALERTS",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "title": "Active Alerts",
+        "type": "table"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 16
+        },
+        "id": 5,
+        "targets": [
+          {
+            "expr": "count(ALERTS) by (alertname)",
+            "legendFormat": "{{alertname}}"
+          }
+        ],
+        "title": "Alert History (24h)",
+        "type": "timeseries"
+      }
+    ],
+    "refresh": "30s",
+    "tags": [
+      "alerts"
+    ],
+    "title": "Alerts Overview",
+    "version": 1
+  },
+  "__inputs": [],
+  "__requires": [],
+  "_export_info": {
+    "source": "Grafana Homelab (10.40.10.80:3000)",
+    "exported_by": "lisa01",
+    "date": "2026-02-24",
+    "folder": "Alerts"
+  }
+}

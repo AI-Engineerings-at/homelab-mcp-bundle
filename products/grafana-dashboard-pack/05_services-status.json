@@ -1,0 +1,176 @@
+{
+  "dashboard": {
+    "panels": [
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "targets": [
+          {
+            "expr": "up{job=\"prometheus\"}",
+            "legendFormat": "Status"
+          }
+        ],
+        "title": "Prometheus",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 4,
+          "y": 0
+        },
+        "id": 2,
+        "targets": [
+          {
+            "expr": "up{job=\"alertmanager\"}",
+            "legendFormat": "Status"
+          }
+        ],
+        "title": "Alertmanager",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 8,
+          "y": 0
+        },
+        "id": 3,
+        "targets": [
+          {
+            "expr": "up{instance=\"10.40.10.80:9100\"}",
+            "legendFormat": "Status"
+          }
+        ],
+        "title": "Node Exporter (docker-swarm)",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 12,
+          "y": 0
+        },
+        "id": 4,
+        "targets": [
+          {
+            "expr": "up{instance=\"10.40.10.82:9100\"}",
+            "legendFormat": "Status"
+          }
+        ],
+        "title": "Node Exporter (docker-swarm2)",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 16,
+          "y": 0
+        },
+        "id": 5,
+        "targets": [
+          {
+            "expr": "up{instance=\"10.40.10.83:9100\"}",
+            "legendFormat": "Status"
+          }
+        ],
+        "title": "Node Exporter (docker-swarm3)",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 20,
+          "y": 0
+        },
+        "id": 6,
+        "targets": [
+          {
+            "expr": "up{instance=\"10.40.10.8:9100\"}",
+            "legendFormat": "Status"
+          }
+        ],
+        "title": "Node Exporter (CasaOS)",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 0,
+          "y": 4
+        },
+        "id": 7,
+        "targets": [
+          {
+            "expr": "up{instance=\"10.40.10.16:9100\"}",
+            "legendFormat": "Status"
+          }
+        ],
+        "title": "PVE1",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 4,
+          "y": 4
+        },
+        "id": 8,
+        "targets": [
+          {
+            "expr": "up{instance=\"10.40.10.12:9100\"}",
+            "legendFormat": "Status"
+          }
+        ],
+        "title": "PVE3",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 12,
+          "w": 24,
+          "x": 0,
+          "y": 8
+        },
+        "id": 9,
+        "targets": [
+          {
+            "expr": "up",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{job}} - {{instance}}"
+          }
+        ],
+        "title": "All Targets Status",
+        "type": "table"
+      }
+    ],
+    "refresh": "30s",
+    "tags": [
+      "services",
+      "applications"
+    ],
+    "title": "Services Status",
+    "version": 1
+  },
+  "__inputs": [],
+  "__requires": [],
+  "_export_info": {
+    "source": "Grafana Homelab (10.40.10.80:3000)",
+    "exported_by": "lisa01",
+    "date": "2026-02-24",
+    "folder": "Applications"
+  }
+}

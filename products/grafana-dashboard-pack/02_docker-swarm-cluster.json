@@ -1,0 +1,135 @@
+{
+  "dashboard": {
+    "panels": [
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "targets": [
+          {
+            "expr": "count(node_uname_info{job=\"docker-swarm\"})"
+          }
+        ],
+        "title": "Swarm Nodes",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 0,
+          "y": 4
+        },
+        "id": 2,
+        "targets": [
+          {
+            "expr": "100 - (avg(irate(node_cpu_seconds_total{mode=\"idle\",nodename=\"docker-swarm\"}[5m])) * 100)"
+          }
+        ],
+        "title": "CPU (docker-swarm)",
+        "type": "gauge"
+      },
+      {
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 6,
+          "y": 4
+        },
+        "id": 3,
+        "targets": [
+          {
+            "expr": "100 - (avg(irate(node_cpu_seconds_total{mode=\"idle\",nodename=\"docker-swarm2\"}[5m])) * 100)"
+          }
+        ],
+        "title": "CPU (docker-swarm2)",
+        "type": "gauge"
+      },
+      {
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 12,
+          "y": 4
+        },
+        "id": 4,
+        "targets": [
+          {
+            "expr": "100 - (avg(irate(node_cpu_seconds_total{mode=\"idle\",nodename=\"docker-swarm3\"}[5m])) * 100)"
+          }
+        ],
+        "title": "CPU (docker-swarm3)",
+        "type": "gauge"
+      },
+      {
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 18,
+          "y": 4
+        },
+        "id": 5,
+        "targets": [
+          {
+            "expr": "100 - (avg(irate(node_cpu_seconds_total{mode=\"idle\",nodename=\"CasaOS\"}[5m])) * 100)"
+          }
+        ],
+        "title": "CPU (CasaOS)",
+        "type": "gauge"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 10
+        },
+        "id": 6,
+        "targets": [
+          {
+            "expr": "(1 - (node_memory_MemAvailable_bytes{job=\"docker-swarm\"} / node_memory_MemTotal_bytes{job=\"docker-swarm\"})) * 100",
+            "legendFormat": "{{nodename}}"
+          }
+        ],
+        "title": "Memory Usage",
+        "type": "timeseries"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 18
+        },
+        "id": 7,
+        "targets": [
+          {
+            "expr": "100 - ((node_filesystem_avail_bytes{job=\"docker-swarm\",mountpoint=\"/\"} / node_filesystem_size_bytes{job=\"docker-swarm\",mountpoint=\"/\"}) * 100)",
+            "legendFormat": "{{nodename}}"
+          }
+        ],
+        "title": "Disk Usage",
+        "type": "timeseries"
+      }
+    ],
+    "refresh": "30s",
+    "tags": [
+      "docker",
+      "swarm"
+    ],
+    "title": "Docker Swarm Cluster",
+    "version": 1
+  },
+  "__inputs": [],
+  "__requires": [],
+  "_export_info": {
+    "source": "Grafana Homelab (10.40.10.80:3000)",
+    "exported_by": "lisa01",
+    "date": "2026-02-24",
+    "folder": "Docker"
+  }
+}

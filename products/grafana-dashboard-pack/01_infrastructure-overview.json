@@ -1,0 +1,169 @@
+{
+  "dashboard": {
+    "panels": [
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "targets": [
+          {
+            "expr": "count(up == 1)"
+          }
+        ],
+        "title": "Services Up",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 6,
+          "y": 0
+        },
+        "id": 2,
+        "targets": [
+          {
+            "expr": "count(up == 0) or vector(0)"
+          }
+        ],
+        "title": "Services Down",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 12,
+          "y": 0
+        },
+        "id": 3,
+        "targets": [
+          {
+            "expr": "count(ALERTS{alertstate=\"firing\"}) or vector(0)"
+          }
+        ],
+        "title": "Active Alerts",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 18,
+          "y": 0
+        },
+        "id": 4,
+        "targets": [
+          {
+            "expr": "count(count by(nodename)(node_uname_info))"
+          }
+        ],
+        "title": "Total Nodes",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 0,
+          "y": 4
+        },
+        "id": 5,
+        "targets": [
+          {
+            "expr": "100 - (avg by(nodename)(irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+            "legendFormat": "{{nodename}}"
+          }
+        ],
+        "title": "CPU by Node",
+        "type": "bargauge"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 8,
+          "y": 4
+        },
+        "id": 6,
+        "targets": [
+          {
+            "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+            "legendFormat": "{{nodename}}"
+          }
+        ],
+        "title": "Memory by Node",
+        "type": "bargauge"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 4
+        },
+        "id": 7,
+        "targets": [
+          {
+            "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"}) * 100)",
+            "legendFormat": "{{nodename}}"
+          }
+        ],
+        "title": "Disk by Node",
+        "type": "bargauge"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 12
+        },
+        "id": 8,
+        "targets": [
+          {
+            "expr": "100 - (avg by(nodename)(irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+            "legendFormat": "{{nodename}}"
+          }
+        ],
+        "title": "CPU History",
+        "type": "timeseries"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 20
+        },
+        "id": 9,
+        "targets": [
+          {
+            "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+            "legendFormat": "{{nodename}}"
+          }
+        ],
+        "title": "Memory History",
+        "type": "timeseries"
+      }
+    ],
+    "refresh": "30s",
+    "tags": [
+      "infrastructure"
+    ],
+    "title": "Infrastructure Overview",
+    "version": 1
+  },
+  "__inputs": [],
+  "__requires": [],
+  "_export_info": {
+    "source": "Grafana Homelab (10.40.10.80:3000)",
+    "exported_by": "lisa01",
+    "date": "2026-02-24",
+    "folder": "Infrastructure"
+  }
+}
