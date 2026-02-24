@@ -1,0 +1,220 @@
+{
+  "name": "REV: Rapidmail Welcome-Mail nach Opt-In",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "rapidmail-confirmed",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "rmw-webhook",
+      "name": "Webhook: Rapidmail Confirmed",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rapidmail Double-Opt-In Confirmation Webhook\n// Payload-Felder variieren je nach Rapidmail-Konfiguration\nconst body = $input.first().json;\n\n// Email aus verschiedenen Payload-Formaten extrahieren\nconst email =\n  body.email ||\n  body.Email ||\n  body.subscriber_email ||\n  body.body?.email ||\n  '';\n\nif (!email || !email.includes('@')) {\n  throw new Error(`Ungueltige Email in Payload: ${JSON.stringify(body)}`);\n}\n\n// Name extrahieren\nconst firstName =\n  body.firstname ||\n  body.first_name ||\n  body.vorname ||\n  body.subscriber_firstname ||\n  body.body?.firstname ||\n  'Interessent';\n\n// Download-URL aus Env oder Fallback\nconst downloadUrl =\n  $env.DOWNLOAD_URL ||\n  'https://ai-engineering.at/download/homelab-automation-playbook.pdf';\n\nconst senderName = $env.SENDER_NAME || 'Joe von AI-Engineering.at';\nconst senderEmail = $env.SENDER_EMAIL || 'hallo@ai-engineering.at';\nconst rapidmailApiKey = $env.RAPIDMAIL_API_KEY || '';\n\nif (!rapidmailApiKey) {\n  throw new Error('RAPIDMAIL_API_KEY Umgebungsvariable nicht gesetzt!');\n}\n\nreturn [{\n  json: {\n    email: email.toLowerCase().trim(),\n    firstName,\n    downloadUrl,\n    senderName,\n    senderEmail,\n    rapidmailApiKey,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "rmw-extract",
+      "name": "Daten extrahieren & validieren",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rest.rapidmail.de/sendmail",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Basic {{ Buffer.from($json.rapidmailApiKey + ':').toString('base64') }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "from",
+              "value": "={{ $json.senderEmail }}"
+            },
+            {
+              "name": "fromname",
+              "value": "={{ $json.senderName }}"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "subject",
+              "value": "Dein Homelab Automation Playbook ist bereit!"
+            },
+            {
+              "name": "html",
+              "value": "=<html>\n<body style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;\">\n\n<div style=\"text-align: center; margin-bottom: 30px;\">\n  <h1 style=\"color: #0066cc; font-size: 28px; margin: 0;\">AI-Engineering.at</h1>\n  <p style=\"color: #666; margin: 5px 0;\">Homelab & AI Automation</p>\n</div>\n\n<p style=\"font-size: 16px;\">Hallo {{ $json.firstName }},</p>\n\n<p style=\"font-size: 16px; line-height: 1.6;\">vielen Dank fuer dein Interesse an unserem <strong>Homelab Automation Playbook</strong>! Du hast dich erfolgreich eingetragen — hier ist dein Download-Link:</p>\n\n<div style=\"text-align: center; margin: 35px 0;\">\n  <a href=\"{{ $json.downloadUrl }}\"\n     style=\"display: inline-block; background-color: #0066cc; color: white; padding: 16px 36px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;\">\n    Playbook jetzt herunterladen\n  </a>\n</div>\n\n<p style=\"font-size: 14px; color: #666;\">Oder kopiere diesen Link in deinen Browser:</p>\n<p style=\"font-size: 14px;\"><a href=\"{{ $json.downloadUrl }}\" style=\"color: #0066cc;\">{{ $json.downloadUrl }}</a></p>\n\n<hr style=\"margin: 30px 0; border: none; border-top: 1px solid #eee;\">\n\n<p style=\"font-size: 14px; line-height: 1.6;\">Das Playbook zeigt dir, wie du mit n8n, Docker Swarm und Prometheus ein professionelles Homelab aufbaust — das Setup, das ich selbst taglich nutze.</p>\n\n<p style=\"font-size: 14px;\">Bei Fragen schreib mir direkt an <a href=\"mailto:{{ $json.senderEmail }}\">{{ $json.senderEmail }}</a></p>\n\n<p style=\"font-size: 14px;\">Beste Gruesse,<br><strong>{{ $json.senderName }}</strong></p>\n\n<hr style=\"margin: 30px 0; border: none; border-top: 1px solid #eee;\">\n<p style=\"color: #999; font-size: 11px; text-align: center;\">Du erhaltst diese E-Mail, weil du dich auf ai-engineering.at eingetragen hast.<br>Diese E-Mail wurde automatisch gesendet. Bitte nicht antworten.</p>\n</body>\n</html>"
+            },
+            {
+              "name": "text",
+              "value": "=Hallo {{ $json.firstName }},\n\nvielen Dank fuer dein Interesse am Homelab Automation Playbook!\n\nDein Download-Link: {{ $json.downloadUrl }}\n\nBei Fragen: {{ $json.senderEmail }}\n\nBeste Gruesse,\n{{ $json.senderName }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "rmw-send",
+      "name": "Rapidmail: Welcome-Mail senden",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer pd5bcjnin3gi5bsuoqi4atyoyc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "channel_id",
+              "value": "1trxzu41pbfc3qd8cxfmsyus8c"
+            },
+            {
+              "name": "message",
+              "value": "=:tada: **Neuer Lead + Welcome-Mail gesendet!**\n:email: `{{ $json.email }}`\n:bust_in_silhouette: {{ $json.firstName }}\n:link: [Download-Link]({{ $json.downloadUrl }})\n:clock1: {{ $json.timestamp }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "rmw-notify",
+      "name": "MM: Notify #echo_log",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"status\": \"ok\", \"message\": \"Welcome email sent\"}"
+      },
+      "id": "rmw-respond",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {},
+      "id": "rmw-error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [240, 520]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer pd5bcjnin3gi5bsuoqi4atyoyc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "channel_id",
+              "value": "1trxzu41pbfc3qd8cxfmsyus8c"
+            },
+            {
+              "name": "message",
+              "value": "=:x: **Rapidmail Welcome-Mail Fehler!**\n**Workflow**: {{ $json.workflow.name }}\n**Fehler**: {{ $json.execution.error.message }}\n**Node**: {{ $json.execution.lastNodeExecuted }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "rmw-error-notify",
+      "name": "Error Notify MM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 520]
+    }
+  ],
+  "connections": {
+    "Webhook: Rapidmail Confirmed": {
+      "main": [[{"node": "Daten extrahieren & validieren", "type": "main", "index": 0}]]
+    },
+    "Daten extrahieren & validieren": {
+      "main": [[
+        {"node": "Rapidmail: Welcome-Mail senden", "type": "main", "index": 0},
+        {"node": "MM: Notify #echo_log", "type": "main", "index": 0}
+      ]]
+    },
+    "Rapidmail: Welcome-Mail senden": {
+      "main": [[{"node": "Respond OK", "type": "main", "index": 0}]]
+    },
+    "MM: Notify #echo_log": {
+      "main": [[{"node": "Respond OK", "type": "main", "index": 0}]]
+    },
+    "Error Trigger": {
+      "main": [[{"node": "Error Notify MM", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "tags": [
+    {"name": "revenue"},
+    {"name": "rapidmail"},
+    {"name": "opt-in"},
+    {"name": "welcome-mail"},
+    {"name": "lead-magnet"}
+  ],
+  "_meta": {
+    "instanceId": "local",
+    "_comment": "SETUP: 1) n8n Env-Var setzen: RAPIDMAIL_API_KEY=<dein-api-key>, DOWNLOAD_URL=<link-zur-pdf>, SENDER_EMAIL, SENDER_NAME. 2) In Rapidmail: Mailing-Liste → Einstellungen → Webhooks → 'Bei Bestätigung (Double Opt-In)' → URL: POST http://10.40.10.80:5678/webhook/{WORKFLOW_ID}/webhook/rapidmail-confirmed. 3) Workflow aktivieren.",
+    "_rapidmail_api_docs": "https://developer.rapidmail.wiki/documentation.html - Sendmail Endpoint: POST https://rest.rapidmail.de/sendmail, Auth: Basic base64(apikey:)",
+    "_test_payload": "{\"email\": \"test@example.com\", \"firstname\": \"Max\"}",
+    "_test_cmd": "curl -X POST -H 'Content-Type: application/json' -d '{\"email\":\"test@example.com\",\"firstname\":\"Max\"}' http://10.40.10.80:5678/webhook-test/rapidmail-confirmed"
+  }
+}

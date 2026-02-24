@@ -1,0 +1,213 @@
+{
+  "name": "Social: Twitter/X Post via API",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "twitter-post",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "tw-webhook",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Eingabe validieren\nconst body = $input.first().json;\nconst text = body.text || body.message || body.content || '';\n\nif (!text) {\n  throw new Error('Fehlender Parameter: text / message / content');\n}\n\nif (text.length > 280) {\n  throw new Error(`Tweet zu lang: ${text.length} Zeichen (max 280)`);\n}\n\nreturn [{ json: { tweet_text: text.trim() } }];"
+      },
+      "id": "tw-validate",
+      "name": "Validiere Eingabe",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.twitter.com/2/tweets",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth1Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.tweet_text }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "tw-post",
+      "name": "POST to Twitter API v2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "credentials": {
+        "oAuth1Api": {
+          "id": "TWITTER_OAUTH1_CREDENTIAL_ID",
+          "name": "Twitter/X OAuth1 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst tweetId = response.data?.id;\nconst tweetText = response.data?.text;\n\nif (!tweetId) {\n  throw new Error('Twitter API Fehler: ' + JSON.stringify(response));\n}\n\nreturn [{\n  json: {\n    success: true,\n    tweet_id: tweetId,\n    tweet_url: `https://twitter.com/i/web/status/${tweetId}`,\n    text: tweetText,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "tw-format",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.MM_BOT_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "channel_id",
+              "value": "1trxzu41pbfc3qd8cxfmsyus8c"
+            },
+            {
+              "name": "message",
+              "value": "=✅ Twitter/X Post erfolgreich!\n🐦 Tweet ID: {{ $json.tweet_id }}\n🔗 {{ $json.tweet_url }}\n📝 {{ $json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "tw-notify",
+      "name": "MM Notify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}"
+      },
+      "id": "tw-respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {},
+      "id": "tw-error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [240, 520]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.MM_BOT_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "channel_id",
+              "value": "1trxzu41pbfc3qd8cxfmsyus8c"
+            },
+            {
+              "name": "message",
+              "value": "=❌ Twitter Workflow Fehler!\n**Workflow**: {{ $json.workflow.name }}\n**Fehler**: {{ $json.execution.error.message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "tw-error-notify",
+      "name": "Error Notify MM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 520]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [[{"node": "Validiere Eingabe", "type": "main", "index": 0}]]
+    },
+    "Validiere Eingabe": {
+      "main": [[{"node": "POST to Twitter API v2", "type": "main", "index": 0}]]
+    },
+    "POST to Twitter API v2": {
+      "main": [[{"node": "Format Response", "type": "main", "index": 0}]]
+    },
+    "Format Response": {
+      "main": [[{"node": "MM Notify", "type": "main", "index": 0}]]
+    },
+    "MM Notify": {
+      "main": [[{"node": "Respond to Webhook", "type": "main", "index": 0}]]
+    },
+    "Error Trigger": {
+      "main": [[{"node": "Error Notify MM", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "tags": [
+    {"name": "social-media"},
+    {"name": "twitter"},
+    {"name": "automation"}
+  ],
+  "_meta": {
+    "instanceId": "local",
+    "_comment": "SETUP: n8n Credential 'Twitter/X OAuth1 API' anlegen mit: Consumer Key, Consumer Secret, Access Token, Access Token Secret (Twitter Developer Portal: developer.twitter.com). Credential-ID in 'oAuth1Api.id' eintragen.",
+    "_endpoint": "POST http://10.40.10.80:5678/webhook/twitter-post",
+    "_payload": "{\"text\": \"Mein erster automatisierter Tweet! #automation #n8n\"}"
+  }
+}

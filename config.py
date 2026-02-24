@@ -51,6 +51,17 @@ def _as_float(value: Any, default: float) -> float:
         return default
 
 
+def _parse_cli_args(value: Any) -> list[str]:
+    """Parse cli_args safely - prevents string-to-character split bug."""
+    if isinstance(value, list):
+        return [str(x) for x in value]
+    if isinstance(value, str):
+        # Single string argument - wrap in list, don't split characters
+        stripped = value.strip()
+        return [stripped] if stripped else []
+    return []
+
+
 def _load_yaml(config_file: Path) -> dict[str, Any]:
     try:
         parsed = yaml.safe_load(config_file.read_text(encoding="utf-8")) or {}
@@ -95,7 +106,7 @@ def load_config(backend: str, config_path: str | None = None) -> BridgeConfig:
         mm_url=str(cfg.get("mm_url", "")).strip(),
         poll_interval=_as_int(cfg.get("poll_interval"), 30),
         cli_cmd=str(cfg.get("cli_cmd", "")).strip(),
-        cli_args=list(cfg.get("cli_args", [])) if isinstance(cfg.get("cli_args", []), list) else [],
+        cli_args=_parse_cli_args(cfg.get("cli_args", [])),
         state_file=str(cfg.get("state_file", f".{backend}_bridge_state.json")),
         working_dir=str(cfg.get("working_dir", ".")),
         max_response_length=_as_int(cfg.get("max_response_length"), 3800),

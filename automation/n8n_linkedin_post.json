@@ -1,0 +1,210 @@
+{
+  "name": "Social: LinkedIn Post via API",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "linkedin-post",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "li-webhook",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Eingabe validieren\nconst body = $input.first().json;\nconst text = body.text || body.message || body.content || '';\nconst authorUrn = body.author_urn || ''; // z.B. 'urn:li:person:ABC123' oder 'urn:li:organization:12345'\n\nif (!text) {\n  throw new Error('Fehlender Parameter: text / message / content');\n}\n\nif (!authorUrn) {\n  throw new Error('Fehlender Parameter: author_urn (z.B. urn:li:person:XYZ oder urn:li:organization:12345)');\n}\n\nif (text.length > 3000) {\n  throw new Error(`Post zu lang: ${text.length} Zeichen (max 3000 fuer LinkedIn)`);\n}\n\n// LinkedIn UGC Post Payload bauen\nconst payload = {\n  author: authorUrn,\n  lifecycleState: 'PUBLISHED',\n  specificContent: {\n    'com.linkedin.ugc.ShareContent': {\n      shareCommentary: {\n        text: text.trim()\n      },\n      shareMediaCategory: 'NONE'\n    }\n  },\n  visibility: {\n    'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC'\n  }\n};\n\nreturn [{ json: { payload, text: text.trim() } }];"
+      },
+      "id": "li-validate",
+      "name": "Validiere und baue Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "rawBody",
+        "body": "={{ JSON.stringify($json.payload) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "li-post",
+      "name": "POST to LinkedIn API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "LINKEDIN_BEARER_CREDENTIAL_ID",
+          "name": "LinkedIn Bearer Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst postId = response.id;\n\nif (!postId) {\n  throw new Error('LinkedIn API Fehler: ' + JSON.stringify(response));\n}\n\n// LinkedIn Post-ID ist URN-Format: urn:li:ugcPost:1234567890\nconst numericId = postId.split(':').pop();\n\nreturn [{\n  json: {\n    success: true,\n    post_id: postId,\n    post_url: `https://www.linkedin.com/feed/update/${postId}/`,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "li-format",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.MM_BOT_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "channel_id",
+              "value": "1trxzu41pbfc3qd8cxfmsyus8c"
+            },
+            {
+              "name": "message",
+              "value": "=✅ LinkedIn Post erfolgreich!\n💼 Post ID: {{ $json.post_id }}\n🔗 {{ $json.post_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "li-notify",
+      "name": "MM Notify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}"
+      },
+      "id": "li-respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {},
+      "id": "li-error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [240, 520]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.MM_BOT_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "channel_id",
+              "value": "1trxzu41pbfc3qd8cxfmsyus8c"
+            },
+            {
+              "name": "message",
+              "value": "=❌ LinkedIn Workflow Fehler!\n**Workflow**: {{ $json.workflow.name }}\n**Fehler**: {{ $json.execution.error.message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "li-error-notify",
+      "name": "Error Notify MM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 520]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [[{"node": "Validiere und baue Payload", "type": "main", "index": 0}]]
+    },
+    "Validiere und baue Payload": {
+      "main": [[{"node": "POST to LinkedIn API", "type": "main", "index": 0}]]
+    },
+    "POST to LinkedIn API": {
+      "main": [[{"node": "Format Response", "type": "main", "index": 0}]]
+    },
+    "Format Response": {
+      "main": [[{"node": "MM Notify", "type": "main", "index": 0}]]
+    },
+    "MM Notify": {
+      "main": [[{"node": "Respond to Webhook", "type": "main", "index": 0}]]
+    },
+    "Error Trigger": {
+      "main": [[{"node": "Error Notify MM", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "tags": [
+    {"name": "social-media"},
+    {"name": "linkedin"},
+    {"name": "automation"}
+  ],
+  "_meta": {
+    "instanceId": "local",
+    "_comment": "SETUP: n8n Credential 'LinkedIn Bearer Token' anlegen (Typ: Header Auth, Header: Authorization, Value: Bearer <TOKEN>). LinkedIn Access Token via OAuth2 App auf linkedin.com/developers. Author URN via GET https://api.linkedin.com/v2/me",
+    "_endpoint": "POST http://10.40.10.80:5678/webhook/linkedin-post",
+    "_payload": "{\"text\": \"Spannender Post ueber Automation! #n8n #automation\", \"author_urn\": \"urn:li:person:DEINE_PERSON_ID\"}"
+  }
+}

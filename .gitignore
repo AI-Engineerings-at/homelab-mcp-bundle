@@ -1,0 +1,126 @@
+# MatterBridge AI - Git Ignore
+# Version: 1.2.0
+# Updated: 2026-02-23
+
+# =============================================================================
+# Python
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv/
+
+# =============================================================================
+# Environment & Secrets
+# =============================================================================
+.env
+.env.local
+.env.*.local
+*.env
+secrets/
+credentials/
+
+# =============================================================================
+# Bridge State & Runtime Files
+# =============================================================================
+# State files (JSON)
+.*_bridge_state.json
+.*_bridge_heartbeat.json
+
+# Specific backend states
+.claude_bridge_state.json
+.copilot_bridge_state.json
+.gemini_bridge_state.json
+.codex_bridge_state.json
+.echo_log_bridge_state.json
+.lisa01_bridge_state.json
+
+# Heartbeat files
+.claude_bridge_heartbeat.json
+.copilot_bridge_heartbeat.json
+.gemini_bridge_heartbeat.json
+.codex_bridge_heartbeat.json
+.echo_log_bridge_heartbeat.json
+.lisa01_bridge_heartbeat.json
+
+# =============================================================================
+# IDE & Editor
+# =============================================================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# =============================================================================
+# OS Generated
+# =============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# =============================================================================
+# Logs
+# =============================================================================
+*.log
+logs/
+log/
+
+# =============================================================================
+# Testing
+# =============================================================================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# =============================================================================
+# Build
+# =============================================================================
+*.manifest
+*.spec
+
+# =============================================================================
+# Temporary
+# =============================================================================
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# =============================================================================
+# Documentation Build
+# =============================================================================
+docs/_build/
+site/

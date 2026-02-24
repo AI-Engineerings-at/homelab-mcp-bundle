@@ -1,0 +1,115 @@
+# MatterBridge AI - Configuration
+# Version: 1.2.0 (with echo_log + codex subagent)
+# Updated: 2026-02-23
+
+defaults:
+  mm_url: "http://10.40.10.83:8065"
+  poll_interval: 30
+  max_response_length: 3800
+  cli_timeout_seconds: 900
+  retry_max_attempts: 3
+  retry_base_seconds: 1.0
+  mm_per_page: 100
+  mm_max_pages: 5
+
+bridges:
+  # =============================================================================
+  # CLAUDE - Original Claude Code Bridge (jim01's setup)
+  # =============================================================================
+  claude:
+    bot_name: "claude"
+    channel_id: "${MM_CHANNEL_ID}"
+    bot_token_env: "MM_CLAUDE_TOKEN"
+    monitor_token_env: "MM_JIM_TOKEN"
+    cli_cmd: "claude"
+    cli_args: []
+    mode: "execute"
+    respond_to_mentions: true
+    task_prefix: "## CLAUDE-TASK:"
+    working_dir: "/home/joe/workspace"
+
+  # =============================================================================
+  # ECHO_LOG - Claude Opus 4.5 Bridge with Codex Subagent
+  # =============================================================================
+  # Features:
+  # - Primary: Responds to @echo_log and ## ECHO_LOG-TASK:
+  # - Subagent: Delegates ## CODEX-SUBAGENT: to Codex CLI for large tasks
+  # - Persona: Network Admin / AIOps specialist
+  # - Model: Claude Opus 4.5 (claude-opus-4-5-20251101)
+  # =============================================================================
+  echo_log:
+    bot_name: "echo_log"
+    channel_id: "${MM_CHANNEL_ID}"
+    bot_token_env: "MM_ECHO_LOG_TOKEN"
+    bot_token_fallback_env: "MM_CLAUDE_TOKEN"
+    monitor_token_env: "MM_JIM_TOKEN"
+    cli_cmd: "claude"
+    cli_args: []
+    mode: "execute"
+    respond_to_mentions: true
+    task_prefix: "## ECHO_LOG-TASK:"
+    task_regex: "##\\s*ECHO[_-]?LOG-TASK[:\\s]*(.*)"
+    working_dir: "/home/joe/cli_bridge"
+    cli_timeout_seconds: 900
+    max_response_length: 3800
+
+  # =============================================================================
+  # COPILOT - GitHub Copilot CLI Bridge
+  # =============================================================================
+  copilot:
+    bot_name: "copilot"
+    channel_id: "${MM_CHANNEL_ID}"
+    bot_token_env: "MM_COPILOT_TOKEN"
+    monitor_token_env: "MM_JIM_TOKEN"
+    cli_cmd: "gh"
+    cli_args: ["copilot"]
+    mode: "execute"
+    respond_to_mentions: true
+    task_prefix: "## COPILOT-TASK:"
+    working_dir: "/home/joe/workspace"
+
+  # =============================================================================
+  # GEMINI - Google Gemini CLI Bridge
+  # =============================================================================
+  gemini:
+    bot_name: "gemini"
+    channel_id: "${MM_CHANNEL_ID}"
+    bot_token_env: "MM_GEMINI_TOKEN"
+    monitor_token_env: "MM_JIM_TOKEN"
+    cli_cmd: "gemini"
+    cli_args: []
+    mode: "execute"
+    respond_to_mentions: true
+    task_prefix: "## GEMINI-TASK:"
+    working_dir: "/home/joe/workspace"
+
+  # =============================================================================
+  # CODEX - OpenAI Codex Monitor (Task Lifecycle Tracking)
+  # =============================================================================
+  codex:
+    bot_name: "codex"
+    channel_id: "${MM_CHANNEL_ID}"
+    bot_token_env: "MM_CODEX_TOKEN"
+    monitor_token_env: "MM_JIM_TOKEN"
+    mode: "monitor"
+    respond_to_mentions: false
+    task_prefix: "## CODEX-TASK:"
+    working_dir: "/home/joe/workspace"
+
+  # =============================================================================
+  # LISA01 - Alias for Claude (alternative bot name)
+  # =============================================================================
+  lisa01:
+    bot_name: "lisa01"
+    channel_id: "${MM_CHANNEL_ID}"
+    bot_token_env: "MM_LISA01_TOKEN"
+    bot_token_fallback_env: "MM_CLAUDE_TOKEN"
+    monitor_token_env: "MM_JIM_TOKEN"
+    cli_cmd: "claude"
+    cli_args: []
+    mode: "execute"
+    respond_to_mentions: true
+    task_prefix: "## LISA01-TASK:"
+    working_dir: "/home/joe/workspace"
+    cli_timeout_seconds: 900
+    max_response_length: 3800

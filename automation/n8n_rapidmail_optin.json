@@ -1,0 +1,185 @@
+{
+  "name": "P0-REV-01: Download-Link nach Opt-In (v2)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "rapidmail-optin",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "rm-webhook",
+      "name": "Rapidmail Opt-In Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rapidmail sendet verschiedene Payload-Formate\n// Unterstütze: form-data, JSON, query-params\nconst body = $input.first().json;\n\n// Email extrahieren (mehrere mögliche Felder)\nconst email = \n  body.email ||\n  body.Email ||\n  body.body?.email ||\n  body.subscriber?.email ||\n  '';\n\nif (!email || !email.includes('@')) {\n  throw new Error(`Ungültige oder fehlende Email: ${JSON.stringify(body)}`);\n}\n\n// Optional: Name extrahieren\nconst firstName = \n  body.firstname || body.first_name || body.vorname ||\n  body.body?.firstname ||\n  body.subscriber?.firstname ||\n  'Interessent';\n\n// Download-URL (konfigurierbar)\nconst downloadUrl = $env.DOWNLOAD_URL || 'https://deine-domain.de/download/lead-magnet.pdf';\n\nreturn [{\n  json: {\n    email: email.toLowerCase().trim(),\n    firstName: firstName,\n    downloadUrl,\n    timestamp: new Date().toISOString(),\n    rawPayload: body\n  }\n}];"
+      },
+      "id": "rm-extract",
+      "name": "Email extrahieren",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.SENDER_EMAIL || 'hallo@deine-domain.de' }}",
+        "toEmail": "={{ $json.email }}",
+        "subject": "Dein Download-Link ist da!",
+        "emailFormat": "html",
+        "message": "=<html><body style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;\">\n<h2 style=\"color: #333;\">Hallo {{ $json.firstName }},</h2>\n<p>vielen Dank für dein Interesse! Hier ist dein persönlicher Download-Link:</p>\n<div style=\"text-align: center; margin: 30px 0;\">\n  <a href=\"{{ $json.downloadUrl }}\" \n     style=\"background-color: #007bff; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-size: 18px;\">\n    📥 Jetzt herunterladen\n  </a>\n</div>\n<p>Oder kopiere diesen Link in deinen Browser:</p>\n<p><a href=\"{{ $json.downloadUrl }}\">{{ $json.downloadUrl }}</a></p>\n<hr style=\"margin: 30px 0; border: none; border-top: 1px solid #eee;\">\n<p style=\"color: #888; font-size: 12px;\">Diese Email wurde automatisch gesendet. Bitte nicht antworten.</p>\n</body></html>",
+        "options": {}
+      },
+      "id": "rm-send-email",
+      "name": "Download-Link per Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [680, 200],
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "SMTP Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer pd5bcjnin3gi5bsuoqi4atyoyc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "channel_id",
+              "value": "1trxzu41pbfc3qd8cxfmsyus8c"
+            },
+            {
+              "name": "message",
+              "value": "=🎯 **Neuer Lead!**\n📧 Email: `{{ $json.email }}`\n👤 Name: {{ $json.firstName }}\n🔗 Download-Link gesendet: {{ $json.downloadUrl }}\n⏰ {{ $json.timestamp }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "rm-notify",
+      "name": "MM Notify Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"status\": \"ok\", \"message\": \"Download link sent\"}"
+      },
+      "id": "rm-respond",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {},
+      "id": "rm-error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [240, 520]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer pd5bcjnin3gi5bsuoqi4atyoyc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "channel_id",
+              "value": "1trxzu41pbfc3qd8cxfmsyus8c"
+            },
+            {
+              "name": "message",
+              "value": "=❌ Opt-In Workflow Fehler!\n**Workflow**: {{ $json.workflow.name }}\n**Fehler**: {{ $json.execution.error.message }}\n**Node**: {{ $json.execution.lastNodeExecuted }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "rm-error-notify",
+      "name": "Error Notify MM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 520]
+    }
+  ],
+  "connections": {
+    "Rapidmail Opt-In Webhook": {
+      "main": [[{"node": "Email extrahieren", "type": "main", "index": 0}]]
+    },
+    "Email extrahieren": {
+      "main": [[
+        {"node": "Download-Link per Email", "type": "main", "index": 0},
+        {"node": "MM Notify Lead", "type": "main", "index": 0}
+      ]]
+    },
+    "Download-Link per Email": {
+      "main": [[{"node": "Respond OK", "type": "main", "index": 0}]]
+    },
+    "MM Notify Lead": {
+      "main": [[{"node": "Respond OK", "type": "main", "index": 0}]]
+    },
+    "Error Trigger": {
+      "main": [[{"node": "Error Notify MM", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "tags": [
+    {"name": "rapidmail"},
+    {"name": "opt-in"},
+    {"name": "lead-magnet"},
+    {"name": "automation"}
+  ],
+  "_meta": {
+    "instanceId": "local",
+    "_comment": "SETUP: 1) SMTP Credential in n8n anlegen. 2) Env-Vars setzen: DOWNLOAD_URL (direkter Link zur PDF/Seite), SENDER_EMAIL. 3) Rapidmail Webhook-URL setzen auf: POST http://10.40.10.80:5678/webhook/rapidmail-optin. 4) Workflow aktivieren.",
+    "_test_endpoint": "POST http://10.40.10.80:5678/webhook-test/rapidmail-optin",
+    "_test_payload": "{\"email\": \"test@example.com\", \"firstname\": \"Max\"}",
+    "_rapidmail_docs": "In Rapidmail: Liste → Einstellungen → Webhooks → bei Bestätigung (Double Opt-In)"
+  }
+}
