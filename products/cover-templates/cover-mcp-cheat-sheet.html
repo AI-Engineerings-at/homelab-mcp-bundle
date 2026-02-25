@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px; height: 720px; overflow: hidden;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    color: #F8FAFC;
+  }
+  .container {
+    width: 1280px; height: 720px;
+    background: linear-gradient(135deg, #1E1B4B 0%, #312E81 40%, #1E1B4B 100%);
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 60px;
+  }
+  .container::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(165,180,252,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(165,180,252,0.08) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+  .container::after {
+    content: '';
+    position: absolute;
+    width: 700px; height: 500px;
+    background: radial-gradient(ellipse, rgba(99,102,241,0.25) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  .badge-free {
+    position: absolute;
+    top: 40px; right: 50px;
+    background: #EAB308;
+    color: #1C1917;
+    font-size: 24px; font-weight: 900;
+    padding: 12px 28px;
+    border-radius: 50px;
+    letter-spacing: 1px;
+    z-index: 10;
+    box-shadow: 0 4px 20px rgba(234,179,8,0.5);
+  }
+  .badge-category {
+    position: absolute;
+    top: 40px; left: 50px;
+    background: rgba(165,180,252,0.15);
+    border: 1px solid rgba(165,180,252,0.4);
+    color: #A5B4FC;
+    font-size: 16px; font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 50px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 10;
+  }
+  .content { position: relative; z-index: 10; text-align: center; }
+  .icon {
+    font-size: 88px;
+    margin-bottom: 24px;
+    display: block;
+    filter: drop-shadow(0 0 30px rgba(165,180,252,0.8));
+  }
+  h1 {
+    font-size: 68px; font-weight: 800;
+    color: #F8FAFC;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .subtitle {
+    font-size: 26px; font-weight: 400;
+    color: #C7D2FE;
+    margin-bottom: 40px;
+  }
+  .tools-row {
+    display: flex; gap: 16px; justify-content: center;
+    margin-bottom: 20px;
+  }
+  .tool-chip {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #E0E7FF;
+    font-size: 20px; font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 10px;
+  }
+  .features {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  }
+  .feature {
+    background: rgba(99,102,241,0.2);
+    border: 1px solid rgba(99,102,241,0.4);
+    color: #C7D2FE;
+    font-size: 16px; font-weight: 500;
+    padding: 9px 18px;
+    border-radius: 8px;
+  }
+  .footer {
+    position: absolute;
+    bottom: 32px;
+    color: rgba(165,180,252,0.5);
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="badge-category">Lead Magnet</div>
+  <div class="badge-free">GRATIS</div>
+  <div class="content">
+    <span class="icon">📋</span>
+    <h1>MCP Cheat Sheet</h1>
+    <p class="subtitle">Model Context Protocol — Quick Reference Guide</p>
+    <div class="tools-row">
+      <div class="tool-chip">Claude</div>
+      <div class="tool-chip">Cursor</div>
+      <div class="tool-chip">VS Code</div>
+    </div>
+    <div class="features">
+      <span class="feature">✅ 50+ MCP Tools</span>
+      <span class="feature">✅ Setup Guide</span>
+      <span class="feature">✅ Best Practices</span>
+      <span class="feature">✅ Copy-Paste Ready</span>
+    </div>
+  </div>
+  <div class="footer">ai-engineering.at · Sofort Download · No Spam</div>
+</div>
+</body>
+</html>

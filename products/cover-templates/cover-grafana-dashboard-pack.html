@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px; height: 720px; overflow: hidden;
+    background: #0F172A;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    color: #F8FAFC;
+  }
+  .container {
+    width: 1280px; height: 720px;
+    background: linear-gradient(135deg, #0F172A 0%, #1A1F35 60%, #0F172A 100%);
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 60px;
+  }
+  .container::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(249,115,22,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(249,115,22,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .container::after {
+    content: '';
+    position: absolute;
+    width: 700px; height: 400px;
+    background: radial-gradient(ellipse, rgba(249,115,22,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  /* Simulated dashboard panels */
+  .mock-panels {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 220px;
+    display: flex; gap: 8px;
+    padding: 0 40px;
+    opacity: 0.18;
+    align-items: flex-end;
+  }
+  .panel {
+    flex: 1;
+    background: rgba(249,115,22,0.3);
+    border-radius: 4px 4px 0 0;
+    border-top: 2px solid rgba(249,115,22,0.6);
+  }
+  .badge-price {
+    position: absolute;
+    top: 40px; right: 50px;
+    background: #10B981;
+    color: white;
+    font-size: 28px; font-weight: 800;
+    padding: 12px 28px;
+    border-radius: 50px;
+    z-index: 10;
+    box-shadow: 0 4px 20px rgba(16,185,129,0.4);
+  }
+  .badge-category {
+    position: absolute;
+    top: 40px; left: 50px;
+    background: rgba(249,115,22,0.2);
+    border: 1px solid rgba(249,115,22,0.5);
+    color: #FDBA74;
+    font-size: 16px; font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 50px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 10;
+  }
+  .content { position: relative; z-index: 10; text-align: center; }
+  .icon {
+    font-size: 88px;
+    margin-bottom: 24px;
+    display: block;
+    filter: drop-shadow(0 0 30px rgba(249,115,22,0.7));
+  }
+  h1 {
+    font-size: 60px; font-weight: 800;
+    color: #F8FAFC;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .subtitle {
+    font-size: 26px; font-weight: 400;
+    color: #94A3B8;
+    margin-bottom: 40px;
+  }
+  .features {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  }
+  .feature {
+    background: rgba(249,115,22,0.12);
+    border: 1px solid rgba(249,115,22,0.3);
+    color: #FDBA74;
+    font-size: 17px; font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 8px;
+  }
+  .footer {
+    position: absolute;
+    bottom: 32px;
+    color: #475569;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="mock-panels">
+    <div class="panel" style="height:80%"></div>
+    <div class="panel" style="height:60%"></div>
+    <div class="panel" style="height:90%"></div>
+    <div class="panel" style="height:70%"></div>
+    <div class="panel" style="height:85%"></div>
+    <div class="panel" style="height:55%"></div>
+    <div class="panel" style="height:95%"></div>
+    <div class="panel" style="height:65%"></div>
+    <div class="panel" style="height:75%"></div>
+    <div class="panel" style="height:88%"></div>
+  </div>
+  <div class="badge-category">Grafana Monitoring</div>
+  <div class="badge-price">EUR 29</div>
+  <div class="content">
+    <span class="icon">📊</span>
+    <h1>Grafana Dashboard Pack</h1>
+    <p class="subtitle">6 Production-Ready Homelab & DevOps Dashboards</p>
+    <div class="features">
+      <span class="feature">✅ Proxmox VE</span>
+      <span class="feature">✅ Docker Swarm</span>
+      <span class="feature">✅ Network Traffic</span>
+      <span class="feature">✅ Node Exporter</span>
+    </div>
+  </div>
+  <div class="footer">ai-engineering.at · Import in 5 Minuten · Enterprise-Grade</div>
+</div>
+</body>
+</html>
