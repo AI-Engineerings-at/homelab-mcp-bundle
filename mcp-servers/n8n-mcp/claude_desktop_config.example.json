@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "n8n": {
+      "command": "python",
+      "args": ["-m", "n8n_mcp.server"],
+      "env": {
+        "N8N_BASE_URL": "http://10.40.10.80:5678",
+        "N8N_API_KEY": "your_n8n_api_key_here"
+      }
+    }
+  }
+}
