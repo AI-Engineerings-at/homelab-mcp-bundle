@@ -1,7 +1,7 @@
 # Show HN: I built a multi-agent AI team that actually works (self-hosted, GDPR-compliant)
 
-> Status: DRAFT — Copy-paste ready für Hacker News
-> Erstellt: 2026-02-25 | @lisa01
+> Status: FINAL — Launch-ready
+> Erstellt: 2026-02-25 | @lisa01 | Aktualisiert: 2026-02-26
 > Ziel: "Show HN" oder "Ask HN" — 1000+ Besucher auf ai-engineering.at
 
 ---
@@ -94,5 +94,5 @@ or how GDPR compliance works in practice with LLM systems.
 ## Links im Post
 
 - Haupt-URL: https://ai-engineering.at
-- Blueprint Produkt: (nach Gumroad-Setup einfügen)
+- Blueprint Produkt: https://ai-engineering.at/products (AI Agent Team Blueprint — EUR 19)
 - GitHub (Open Source MCP Bundle): https://github.com/AI-Engineerings-at/homelab-mcp-bundle

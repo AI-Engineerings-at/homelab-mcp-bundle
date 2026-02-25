@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "uptime-kuma": {
+      "command": "python3",
+      "args": ["/path/to/uptime-kuma-mcp/src/uptime_kuma_mcp/server.py"],
+      "env": {
+        "KUMA_BASE_URL": "http://10.40.10.80:3001",
+        "KUMA_USERNAME": "joe",
+        "KUMA_PASSWORD": "your_password_here"
+      }
+    }
+  }
+}

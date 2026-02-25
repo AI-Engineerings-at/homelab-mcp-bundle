@@ -1,0 +1,155 @@
+{
+  "name": "Lead Magnet: KI-Checklist Delivery",
+  "nodes": [
+    {
+      "id": "webhook-checklist",
+      "name": "AI Checklist Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-magnet-checklist",
+        "responseMode": "responseNode"
+      }
+    },
+    {
+      "id": "code-extract",
+      "name": "Email & Daten extrahieren",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300],
+      "parameters": {
+        "jsCode": "// KI-Agenten Readiness Checklist Lead Magnet\nconst body = $input.first().json;\nconsole.log('AI Checklist Lead Magnet Payload:', JSON.stringify(body));\n\nconst email =\n  body.email ||\n  body.Email ||\n  body.subscriber?.email ||\n  body.body?.email ||\n  '';\n\nif (!email || !email.includes('@')) {\n  throw new Error(`Ungueltige Email im Payload: ${JSON.stringify(body)}`);\n}\n\nconst firstName =\n  body.firstname ||\n  body.first_name ||\n  body.vorname ||\n  body.subscriber?.firstname ||\n  body.body?.firstname ||\n  'Business Leader';\n\nconst eventType = body.event || body.type || body.status || 'confirmed';\n\nconst downloadUrl = 'https://www.ai-engineering.at/downloads/ki-agenten-readiness-checklist.pdf';\nconst senderEmail = 'hallo@ai-engineering.at';\nconst senderName = 'Joe von AI-Engineering.at';\n\nreturn [{\n  json: {\n    email: email.toLowerCase().trim(),\n    firstName,\n    eventType,\n    downloadUrl,\n    senderEmail,\n    senderName,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      }
+    },
+    {
+      "id": "http-resend",
+      "name": "KI-Checklist Email via Resend",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.RESEND_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"{{ $json.senderName }} <{{ $json.senderEmail }}>\",\n  \"to\": [\"{{ $json.email }}\"],\n  \"subject\": \"Deine KI-Agenten Readiness Checklist ist da!\",\n  \"html\": \"<!DOCTYPE html><html lang='de'><head><meta charset='UTF-8'><style>body{font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;}h1{color:#0f3460;}a.btn{display:inline-block;background:#e94560;color:white;padding:14px 28px;text-decoration:none;border-radius:6px;font-size:16px;font-weight:bold;margin:20px 0;}.footer{margin-top:30px;padding-top:15px;border-top:1px solid #eee;font-size:12px;color:#999;}</style></head><body><h1>Ist dein Unternehmen KI-ready?</h1><p>Hey {{ $json.firstName }},</p><p>danke fuer dein Interesse! Hier ist deine kostenlose KI-Agenten Readiness Checklist — 25 Fragen, die dir in 5 Minuten zeigen, wo dein Unternehmen steht:</p><a href='{{ $json.downloadUrl }}' class='btn'>Checklist jetzt herunterladen</a><p>Die Checklist hilft dir:</p><ul><li>Den aktuellen KI-Reifegrad deines Unternehmens einschaetzen</li><li>Die 4 Quick Wins identifizieren, die du sofort umsetzen kannst</li><li>Haufige Fehler bei KI-Projekten vermeiden</li><li>Den naechsten Schritt konkret planen</li></ul><p>Nach dem Download: Buch dir einen <strong>kostenlosen 30-Minuten-Check</strong> — wir zeigen dir, welcher KI-Agent den schnellsten ROI bringt.</p><p>&#8594; <a href='https://www.ai-engineering.at'>ai-engineering.at</a></p><p>Falls der Button nicht funktioniert:<br><a href='{{ $json.downloadUrl }}'>{{ $json.downloadUrl }}</a></p><div class='footer'><p>AI Engineering Austria | <a href='https://www.ai-engineering.at'>ai-engineering.at</a> | <a href='mailto:hello@ai-engineering.at'>hello@ai-engineering.at</a></p></div></body></html>\"\n}"
+      }
+    },
+    {
+      "id": "http-mm",
+      "name": "MM: Lead Checklist benachrichtigen",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.MM_LISA01_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"channel_id\": \"1trxzu41pbfc3qd8cxfmsyus8c\", \"message\": \":white_check_mark: **Lead Magnet: KI-Checklist**\\nNeuer Lead: `{{ $('Email & Daten extrahieren').item.json.email }}`\\nZeit: {{ $('Email & Daten extrahieren').item.json.timestamp }}\"}"
+      }
+    },
+    {
+      "id": "respond-ok",
+      "name": "Respond 200 OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1120, 300],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"status\": \"ok\", \"message\": \"Checklist wird per Email zugeschickt\"}"
+      }
+    },
+    {
+      "id": "error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [240, 520],
+      "parameters": {}
+    },
+    {
+      "id": "error-mm",
+      "name": "Error: MM Benachrichtigung",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 520],
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.MM_LISA01_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"channel_id\": \"1trxzu41pbfc3qd8cxfmsyus8c\", \"message\": \":warning: **Error in KI-Checklist Delivery**\\n```{{ $json.error.message }}```\"}"
+      }
+    }
+  ],
+  "connections": {
+    "AI Checklist Webhook": {
+      "main": [[{"node": "Email & Daten extrahieren", "type": "main", "index": 0}]]
+    },
+    "Email & Daten extrahieren": {
+      "main": [[{"node": "KI-Checklist Email via Resend", "type": "main", "index": 0}]]
+    },
+    "KI-Checklist Email via Resend": {
+      "main": [[{"node": "MM: Lead Checklist benachrichtigen", "type": "main", "index": 0}]]
+    },
+    "MM: Lead Checklist benachrichtigen": {
+      "main": [[{"node": "Respond 200 OK", "type": "main", "index": 0}]]
+    },
+    "Error Trigger": {
+      "main": [[{"node": "Error: MM Benachrichtigung", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-25T00:00:00.000Z",
+  "versionId": "1"
+}

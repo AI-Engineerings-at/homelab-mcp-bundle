@@ -1,0 +1,96 @@
+# Cloudflare Tunnel Stack fuer Docker Swarm
+# Zweck: Macht interne Services (n8n Webhook, Download-Issuer) extern erreichbar
+#        ohne Port-Forwarding oder oeffentliche IP
+#
+# SETUP (einmalig):
+#   1. Cloudflare Dashboard -> Zero Trust -> Networks -> Tunnels -> Create
+#   2. Tunnel Token kopieren
+#   3. Token als Docker Secret speichern:
+#      echo "TOKEN_HIER_EINFUEGEN" | docker secret create cf_tunnel_token -
+#   4. Stack deployen:
+#      docker stack deploy -c cloudflare-tunnel-stack.yml cf-tunnel
+#
+# DANN in Cloudflare Dashboard konfigurieren:
+#   Public Hostname: stripe.ai-engineering.at -> http://10.40.10.80:5678
+#   Public Hostname: api.ai-engineering.at    -> http://10.40.10.80:5678
+#   Public Hostname: download.ai-engineering.at -> http://10.40.10.99:3002
+#
+# Stripe Webhook URL (danach eintragen):
+#   https://stripe.ai-engineering.at/webhook/stripe-payment-completed
+#
+version: "3.8"
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      # Token wird aus Docker Secret gelesen
+      - TUNNEL_TOKEN_FILE=/run/secrets/cf_tunnel_token
+    secrets:
+      - cf_tunnel_token
+    networks:
+      - tunnel_net
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          # Auf Manager-Node deployen fuer stabilen Zugriff auf interne Services
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 60s
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.25"
+        reservations:
+          memory: 64M
+      labels:
+        - "com.docker.stack.description=Cloudflare Tunnel - exposes n8n webhook + download-issuer"
+        - "traefik.enable=false"
+    healthcheck:
+      test: ["CMD", "cloudflared", "tunnel", "--no-autoupdate", "info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+secrets:
+  cf_tunnel_token:
+    external: true
+    name: cf_tunnel_token
+
+networks:
+  tunnel_net:
+    driver: overlay
+    attachable: true
+    # Verbindet sich mit dem bestehenden Swarm-Netz
+    external: false
+
+# -------------------------------------------------------------------
+# NACH DEM DEPLOYMENT - Cloudflare Dashboard Konfiguration:
+# -------------------------------------------------------------------
+# Tunnel -> Configure -> Public Hostnames:
+#
+#  Subdomain          | Service
+#  -------------------|----------------------------------------
+#  stripe-webhook     | HTTP  http://10.40.10.80:5678
+#  api                | HTTP  http://10.40.10.80:5678
+#  download           | HTTP  http://10.40.10.99:3002
+#
+# Access Rules (optional, empfohlen):
+#  - stripe-webhook: Kein Access-Gate (Stripe muss direkt posten)
+#  - download: IP-Allowlist oder One-Time-Token via n8n
+#
+# n8n Webhook URL fuer Stripe:
+#   https://stripe-webhook.ai-engineering.at/webhook/stripe-payment-completed
+# -------------------------------------------------------------------

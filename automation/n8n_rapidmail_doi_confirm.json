@@ -1,0 +1,193 @@
+{
+  "name": "Rapidmail: Double-Opt-In → Download-Link",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "rapidmail-doi-confirm",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "doi-webhook",
+      "name": "DOI Bestätigung Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rapidmail DOI Webhook Payload parsen\n// Rapidmail sendet bei 'confirmed' Event (Double Opt-In Bestätigung)\nconst body = $input.first().json;\n\n// Debug: Payload loggen\nconsole.log('Rapidmail DOI Payload:', JSON.stringify(body));\n\n// Email extrahieren - mehrere mögliche Formate\nconst email =\n  body.email ||\n  body.Email ||\n  body.subscriber?.email ||\n  body.body?.email ||\n  (body.query && body.query.email) ||\n  '';\n\nif (!email || !email.includes('@')) {\n  throw new Error(`Ungültige Email im DOI Payload: ${JSON.stringify(body)}`);\n}\n\n// Name extrahieren\nconst firstName =\n  body.firstname ||\n  body.first_name ||\n  body.vorname ||\n  body.subscriber?.firstname ||\n  body.body?.firstname ||\n  'Interessent';\n\n// Event-Typ prüfen (Rapidmail: 'confirmed', 'subscribed', 'double_opt_in')\nconst eventType = body.event || body.type || body.status || 'confirmed';\n\n// Download-URL aus Umgebungsvariable\nconst downloadUrl = $env.DOWNLOAD_URL || 'https://ai-engineering.at/download/dsgvo-checklist';\nconst senderEmail = $env.AI_SENDER_EMAIL || 'noreply@ai-engineering.at';\nconst senderName = $env.AI_SENDER_NAME || 'AI Engineering Austria';\n\nreturn [{\n  json: {\n    email: email.toLowerCase().trim(),\n    firstName: firstName,\n    eventType,\n    downloadUrl,\n    senderEmail,\n    senderName,\n    timestamp: new Date().toISOString(),\n    rawPayload: body\n  }\n}];"
+      },
+      "id": "doi-extract",
+      "name": "Email & Daten extrahieren",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.RESEND_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"{{ $json.senderName }} <{{ $json.senderEmail }}>\",\n  \"to\": [\"{{ $json.email }}\"],\n  \"subject\": \"✅ Bestätigt! Dein DSGVO AI-Stack Guide wartet auf dich\",\n  \"html\": \"<!DOCTYPE html><html lang='de'><head><meta charset='UTF-8'><style>body{font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;}h1{color:#0f3460;}h2{color:#0f3460;font-size:16px;}.btn{display:inline-block;background:#e94560;color:white;padding:14px 28px;text-decoration:none;border-radius:6px;font-size:16px;font-weight:bold;margin:20px 0;}.footer{margin-top:30px;padding-top:15px;border-top:1px solid #eee;font-size:12px;color:#999;}</style></head><body><h1>Super, {{ $json.firstName }}! 🎉</h1><p>Du hast deine E-Mail-Adresse bestätigt. Vielen Dank!</p><h2>Dein kostenloser Guide ist bereit:</h2><p><strong>5-Step Checklist: DSGVO-konformen AI-Stack in 30 Min planen</strong></p><p>Dieser Guide zeigt dir, wie du KI datenschutzkonform einsetzt — in 30 Minuten geplant, an einem Tag umgesetzt.</p><div style='text-align:center;margin:25px 0;'><a href='{{ $json.downloadUrl }}' class='btn'>📥 Guide jetzt herunterladen</a></div><p style='font-size:13px;color:#666;'>Oder kopiere diesen Link:<br><a href='{{ $json.downloadUrl }}'>{{ $json.downloadUrl }}</a></p><div class='footer'><p><strong>AI Engineering Austria</strong> | ai-engineering.at<br>Hilft KMUs, KI datenschutzkonform selbst zu betreiben.</p><p>Du erhältst diesen Guide, weil du dich auf ai-engineering.at eingetragen hast.<br>Fragen? Antwort einfach auf diese E-Mail.</p></div></body></html>\"\n}",
+        "options": {}
+      },
+      "id": "doi-send-email",
+      "name": "Download-Link via Resend senden",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 180]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer pd5bcjnin3gi5bsuoqi4atyoyc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "channel_id",
+              "value": "1trxzu41pbfc3qd8cxfmsyus8c"
+            },
+            {
+              "name": "message",
+              "value": "=🎯 **Neuer Lead bestätigt (DOI)!**\n📧 Email: `{{ $('Email & Daten extrahieren').item.json.email }}`\n👤 Name: {{ $('Email & Daten extrahieren').item.json.firstName }}\n📎 Event: {{ $('Email & Daten extrahieren').item.json.eventType }}\n🔗 Download gesendet: {{ $('Email & Daten extrahieren').item.json.downloadUrl }}\n⏰ {{ $('Email & Daten extrahieren').item.json.timestamp }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "doi-notify-mm",
+      "name": "MM: Lead benachrichtigen",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 380]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"status\": \"ok\", \"message\": \"DOI confirmed, download link sent\"}"
+      },
+      "id": "doi-respond",
+      "name": "Respond 200 OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 280]
+    },
+    {
+      "parameters": {},
+      "id": "doi-error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [240, 520]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.40.10.83:8065/api/v4/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer pd5bcjnin3gi5bsuoqi4atyoyc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "channel_id",
+              "value": "1trxzu41pbfc3qd8cxfmsyus8c"
+            },
+            {
+              "name": "message",
+              "value": "=❌ **DOI Workflow Fehler!**\n**Workflow**: {{ $json.workflow.name }}\n**Fehler**: {{ $json.execution.error.message }}\n**Node**: {{ $json.execution.lastNodeExecuted }}\n⏰ {{ new Date().toISOString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "doi-error-mm",
+      "name": "Error: MM Benachrichtigung",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 520]
+    }
+  ],
+  "connections": {
+    "DOI Bestätigung Webhook": {
+      "main": [[{"node": "Email & Daten extrahieren", "type": "main", "index": 0}]]
+    },
+    "Email & Daten extrahieren": {
+      "main": [[
+        {"node": "Download-Link via Resend senden", "type": "main", "index": 0},
+        {"node": "MM: Lead benachrichtigen", "type": "main", "index": 0}
+      ]]
+    },
+    "Download-Link via Resend senden": {
+      "main": [[{"node": "Respond 200 OK", "type": "main", "index": 0}]]
+    },
+    "MM: Lead benachrichtigen": {
+      "main": [[{"node": "Respond 200 OK", "type": "main", "index": 0}]]
+    },
+    "Error Trigger": {
+      "main": [[{"node": "Error: MM Benachrichtigung", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "tags": [
+    {"name": "rapidmail"},
+    {"name": "double-opt-in"},
+    {"name": "lead-magnet"},
+    {"name": "resend"},
+    {"name": "automation"}
+  ],
+  "_meta": {
+    "_comment": "SETUP: 1) Env-Var RESEND_API_KEY in n8n setzen. 2) Env-Var DOWNLOAD_URL auf PDF-URL setzen. 3) Env-Var AI_SENDER_EMAIL (z.B. noreply@ai-engineering.at). 4) In Rapidmail: Liste → Webhooks → bei 'Bestätigung' (DOI) → POST http://10.40.10.80:5678/webhook/rapidmail-doi-confirm. 5) Workflow aktivieren.",
+    "_webhook_url_prod": "POST http://10.40.10.80:5678/webhook/rapidmail-doi-confirm",
+    "_webhook_url_test": "POST http://10.40.10.80:5678/webhook-test/rapidmail-doi-confirm",
+    "_test_payload": "{\"email\": \"test@example.com\", \"firstname\": \"Max\", \"event\": \"confirmed\"}",
+    "_cloudflare_tunnel_url": "https://<tunnel>.cfargotunnel.com/webhook/rapidmail-doi-confirm"
+  }
+}

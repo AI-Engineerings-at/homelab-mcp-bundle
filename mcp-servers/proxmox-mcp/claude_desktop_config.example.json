@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "proxmox": {
+      "command": "python3",
+      "args": ["/path/to/proxmox-mcp/src/proxmox_mcp/server.py"],
+      "env": {
+        "PVE_HOST": "https://10.40.10.14:8006",
+        "PVE_USER": "root@pam",
+        "PVE_PASSWORD": "your_password_here",
+        "PVE_VERIFY_SSL": "false"
+      }
+    }
+  }
+}

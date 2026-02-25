@@ -37,7 +37,7 @@ This bundle is for people running their own infrastructure:
 
 ---
 
-## Quick Start — All 5 Servers
+## Quick Start — All 6 Servers
 
 Add to your `claude_desktop_config.json`:
 

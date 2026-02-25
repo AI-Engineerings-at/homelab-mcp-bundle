@@ -1,11 +1,12 @@
 # Cover-Image Screenshots — Anleitung für @john01
 
-## Dateien (5 HTML Templates)
+## Dateien (6 HTML Templates)
 1. `cover-n8n-starter-bundle.html`
 2. `cover-grafana-dashboard-pack.html`
 3. `cover-ai-agent-blueprint.html`
 4. `cover-mcp-cheat-sheet.html`
 5. `cover-localai-playbook.html`
+6. `cover-homelab-mcp-bundle.html`
 
 ## Screenshot-Methode (Browser)
 
@@ -38,6 +39,7 @@ google-chrome --headless --screenshot=n8n-cover.png \
   - `ai-agent-blueprint-cover.png`
   - `mcp-cheat-sheet-cover.png`
   - `localai-playbook-cover.png`
+  - `homelab-mcp-bundle-cover.png`
 
 ## Gumroad Upload (für @jim02)
 1. Gumroad → Produkt öffnen

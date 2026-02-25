@@ -1,7 +1,7 @@
 # Twitter/X Thread — AI Agent Team Blueprint
 
-> Status: COPY-PASTE READY
-> Erstellt: 2026-02-25 | @lisa01
+> Status: FINAL — URLs verifiziert, Launch-ready
+> Erstellt: 2026-02-25 | @lisa01 | Aktualisiert: 2026-02-26
 > Ziel: Awareness für AI-Engineering.at Produkte + Leads
 
 ---
@@ -88,7 +88,7 @@ Das Team schläft nicht. Wir schon.
 
 ```
 7/8
-Das vollständige Blueprint gibt es jetzt als Produkt:
+Das vollständige Blueprint jetzt als Produkt:
 
 → Architektur-Diagramme
 → CLAUDE.md Templates (sofort einsetzbar)
@@ -99,10 +99,10 @@ Das vollständige Blueprint gibt es jetzt als Produkt:
 
 EUR 19. Einmalig.
 
-🔗 ai-engineering.at
+🔗 https://ai-engineering.at
 
 Die MCP Server sind Open Source:
-github.com/AI-Engineerings-at/homelab-mcp-bundle
+https://github.com/AI-Engineerings-at/homelab-mcp-bundle
 ```
 
 ```
@@ -145,8 +145,8 @@ Hier sind die 3 wichtigsten Learnings:
 
 ```
 3/3
-Das komplette Blueprint: ai-engineering.at/blueprint
-MCP Server (Open Source): github.com/AI-Engineerings-at/homelab-mcp-bundle
+Das komplette Blueprint: https://ai-engineering.at/products
+MCP Server (Open Source): https://github.com/AI-Engineerings-at/homelab-mcp-bundle
 
 EUR 19 — Templates, Code, Diagramme, Fehlerliste.
 Aus 3 Monaten Produktion destilliert. 🔗
@@ -161,7 +161,7 @@ Wir betreiben 4 Claude-Agenten produktiv. Die beste Safety-Rule:
 
 "Kein Agent darf einem anderen Agent Lösch-Befehle geben."
 
-Gelernt durch Schmerz. Das komplette Blueprint: ai-engineering.at
+Gelernt durch Schmerz. Das komplette Blueprint: https://ai-engineering.at
 #KI #ClaudeCode #MultiAgent
 ```
 

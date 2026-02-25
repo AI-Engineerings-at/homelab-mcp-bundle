@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "ollama": {
+      "command": "python3",
+      "args": ["/home/joe/cli_bridge/mcp-servers/ollama-mcp/src/ollama_mcp/server.py"],
+      "env": {
+        "OLLAMA_BASE_URL": "http://10.40.10.99:11434"
+      }
+    }
+  }
+}
