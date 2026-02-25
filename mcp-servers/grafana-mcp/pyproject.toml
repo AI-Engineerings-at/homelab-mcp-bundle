@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "grafana-mcp"
+version = "0.1.0"
+description = "Grafana MCP Server — Query dashboards, run PromQL and monitor alerts from any MCP-capable AI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["grafana", "prometheus", "promql", "monitoring", "alerting", "mcp", "ai", "llm", "model-context-protocol", "homelab"]
+dependencies = [
+    "mcp>=1.0.0",
+]
+
+[project.scripts]
+grafana-mcp = "grafana_mcp.server:main"
+
+[project.urls]
+Homepage = "https://ai-engineering.at"
+Repository = "https://github.com/AI-Engineerings-at/Playbook01"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/grafana_mcp"]

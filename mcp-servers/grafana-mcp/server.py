@@ -307,7 +307,7 @@ def annotations_list(limit: int = 20, alert_only: bool = False) -> str:
     }, ensure_ascii=False, indent=2)
 
 
-if __name__ == "__main__":
+def main():
     import sys
 
     if not GRAFANA_PASSWORD and not GRAFANA_TOKEN:
@@ -318,3 +318,7 @@ if __name__ == "__main__":
     print(f"Grafana MCP Server starting...", file=sys.stderr)
     print(f"Grafana: {GRAFANA_URL} | User: {GRAFANA_USER}", file=sys.stderr)
     mcp.run()
+
+
+if __name__ == "__main__":
+    main()
