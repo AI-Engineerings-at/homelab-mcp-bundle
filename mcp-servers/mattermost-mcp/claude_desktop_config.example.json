@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "mattermost": {
+      "command": "python3",
+      "args": ["/path/to/mattermost-mcp/src/mattermost_mcp/server.py"],
+      "env": {
+        "MM_BASE_URL": "https://your-mattermost.example.com",
+        "MM_TOKEN":    "your_personal_access_token",
+        "MM_TEAM_ID":  "your_team_id"
+      }
+    }
+  }
+}
