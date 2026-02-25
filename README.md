@@ -240,4 +240,66 @@ Free to use, modify, and distribute. Attribution appreciated but not required.
 
 Issues and PRs welcome. If you add a new MCP server for a self-hosted service, open a PR!
 
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide: how to add a server, code style, testing, and the PR checklist.
+
 Star this repo if it saved you time. It helps others find it.
+
+---
+
+## FAQ
+
+**Do I need a cloud LLM or a paid API? Can I use Ollama locally?**
+
+No cloud required. Every server in this bundle makes direct HTTP calls to your self-hosted services — nothing ever leaves your network. The `ollama-mcp` server connects to a local Ollama instance running on your own hardware. You can run the entire stack completely offline. The only "cloud" component is Claude Desktop itself, which runs the MCP servers locally on your machine.
+
+---
+
+**What version of Claude Desktop is required?**
+
+Any version of Claude Desktop that supports MCP (Model Context Protocol). MCP support was introduced in late 2024. If your Claude Desktop shows a "Tools" section and allows you to configure `mcpServers` in the config file, it will work. Check [modelcontextprotocol.io](https://modelcontextprotocol.io/) for the latest compatibility information.
+
+---
+
+**Can I use these servers without having all 8 services running?**
+
+Yes. Each MCP server is completely independent. You can use one, three, or all eight — Claude Desktop only starts the servers you configure. If you only run Proxmox and Grafana, just add those two to your `claude_desktop_config.json` and ignore the rest. There are no shared dependencies between servers.
+
+---
+
+**How do I update the servers after pulling new changes?**
+
+```bash
+cd homelab-mcp-bundle
+git pull
+```
+
+Then restart Claude Desktop. The servers are plain Python scripts — there is nothing to compile or rebuild. Claude Desktop starts a fresh process for each server on every launch, so the new code takes effect immediately after restart.
+
+---
+
+**Can I use these MCP servers with Claude.ai in the browser?**
+
+No. MCP is a local protocol that runs between Claude Desktop (the native app) and local server processes on your machine. It is not available in the Claude.ai web interface. You need the Claude Desktop app installed on your computer to use MCP servers.
+
+---
+
+**My service is not in this bundle. How do I build a custom MCP server?**
+
+It is straightforward. See the [CONTRIBUTING.md](./CONTRIBUTING.md) for a complete step-by-step guide with a working skeleton. The short version:
+
+1. Create a new directory `your-service-mcp/`
+2. Copy the structure from `portainer-mcp/` as a starting template
+3. Replace the API calls with your service's REST API
+4. Add your tool functions decorated with `@mcp.tool()`
+5. Add it to your Claude Desktop config
+
+Any service with a REST API can be wrapped in an MCP server this way. The whole thing typically takes under an hour for a simple service.
+
+---
+
+**Does this work on Windows?**
+
+Yes, via two approaches:
+
+- **WSL2 (recommended)**: Run the Python servers inside Windows Subsystem for Linux. The Claude Desktop config on Windows uses the WSL path format: `wsl.exe python3 /home/user/homelab-mcp-bundle/portainer-mcp/server.py`. This is the most reliable approach.
+- **Native Python on Windows**: Install Python 3.9+ from python.org, run `pip install mcp`, and use Windows-style paths in your config: `C:\Users\you\homelab-mcp-bundle\portainer-mcp\server.py`. All servers use only the standard library plus `mcp`, so there are no Linux-only dependencies.
