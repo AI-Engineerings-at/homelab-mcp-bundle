@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "portainer": {
+      "command": "python3",
+      "args": ["-m", "portainer_mcp.server"],
+      "env": {
+        "PORTAINER_URL": "http://10.40.10.80:9000",
+        "PORTAINER_API_TOKEN": "your_portainer_api_token_here",
+        "PORTAINER_ENDPOINT_ID": "1"
+      }
+    }
+  }
+}
