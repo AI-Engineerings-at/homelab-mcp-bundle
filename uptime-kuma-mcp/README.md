@@ -38,7 +38,7 @@ export KUMA_STATUS_PAGE=homelab                 # Status-Page Slug (optional)
       "command": "python3",
       "args": ["/path/to/uptime-kuma-mcp/server.py"],
       "env": {
-        "KUMA_BASE_URL": "http://10.40.10.80:3001",
+        "KUMA_BASE_URL": "http://your-uptime-kuma:3001",
         "KUMA_STATUS_PAGE": "homelab"
       }
     }

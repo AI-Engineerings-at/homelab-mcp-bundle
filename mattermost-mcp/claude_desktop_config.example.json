@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "mattermost": {
+      "command": "python3",
+      "args": ["/path/to/homelab-mcp-bundle/mattermost-mcp/server.py"],
+      "env": {
+        "MM_BASE_URL": "http://your-mattermost:8065/api/v4",
+        "MM_TOKEN": "your-personal-access-token",
+        "MM_TEAM_ID": "your-team-id"
+      }
+    }
+  }
+}

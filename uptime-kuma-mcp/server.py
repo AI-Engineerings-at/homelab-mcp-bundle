@@ -16,7 +16,7 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 # Configuration
-KUMA_BASE_URL = os.environ.get("KUMA_BASE_URL", "http://10.40.10.80:3001")
+KUMA_BASE_URL = os.environ.get("KUMA_BASE_URL", "http://your-uptime-kuma:3001")
 KUMA_STATUS_PAGE = os.environ.get("KUMA_STATUS_PAGE", "homelab")
 
 mcp = FastMCP("uptime-kuma-mcp")

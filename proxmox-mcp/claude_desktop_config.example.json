@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "proxmox": {
+      "command": "python3",
+      "args": ["/path/to/homelab-mcp-bundle/proxmox-mcp/server.py"],
+      "env": {
+        "PVE_HOST": "your-proxmox-host",
+        "PVE_USER": "root@pam",
+        "PVE_PASSWORD": "your-password",
+        "PVE_VERIFY_SSL": "false"
+      }
+    }
+  }
+}

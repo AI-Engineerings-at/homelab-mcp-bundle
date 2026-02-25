@@ -42,7 +42,7 @@ export ADGUARD_PASSWORD=yourpassword           # Required
       "command": "python3",
       "args": ["/path/to/adguard-mcp/server.py"],
       "env": {
-        "ADGUARD_URL": "http://10.40.10.80:3053",
+        "ADGUARD_URL": "http://your-adguard:3053",
         "ADGUARD_USER": "admin",
         "ADGUARD_PASSWORD": "<your-password>"
       }
@@ -91,7 +91,7 @@ Works with both primary and secondary AdGuard instances:
       "command": "python3",
       "args": ["/path/to/adguard-mcp/server.py"],
       "env": {
-        "ADGUARD_URL": "http://10.40.10.80:3053",
+        "ADGUARD_URL": "http://your-adguard:3053",
         "ADGUARD_PASSWORD": "<password>"
       }
     },
@@ -99,7 +99,7 @@ Works with both primary and secondary AdGuard instances:
       "command": "python3",
       "args": ["/path/to/adguard-mcp/server.py"],
       "env": {
-        "ADGUARD_URL": "http://10.40.10.82:3054",
+        "ADGUARD_URL": "http://your-adguard-secondary:3054",
         "ADGUARD_PASSWORD": "<password>"
       }
     }

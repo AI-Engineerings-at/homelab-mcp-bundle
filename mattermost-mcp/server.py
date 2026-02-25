@@ -18,7 +18,7 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 # Konfiguration
-MM_BASE_URL = os.environ.get("MM_BASE_URL", "http://10.40.10.83:8065/api/v4")
+MM_BASE_URL = os.environ.get("MM_BASE_URL", "http://your-mattermost:8065/api/v4")
 MM_TOKEN = os.environ.get("MM_TOKEN", "")
 MM_TEAM_ID = os.environ.get("MM_TEAM_ID", "")
 

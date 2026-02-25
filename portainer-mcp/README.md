@@ -40,7 +40,7 @@ export PORTAINER_ENDPOINT_ID=1   # optional, Standard: 1
       "command": "python3",
       "args": ["/path/to/portainer-mcp/server.py"],
       "env": {
-        "PORTAINER_URL": "http://10.40.10.80:9000",
+        "PORTAINER_URL": "http://your-portainer:9000",
         "PORTAINER_PASSWORD": "<dein-passwort>"
       }
     }

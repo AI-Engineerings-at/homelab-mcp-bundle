@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "grafana": {
+      "command": "python3",
+      "args": ["/path/to/homelab-mcp-bundle/grafana-mcp/server.py"],
+      "env": {
+        "GRAFANA_URL": "http://your-grafana:3000",
+        "GRAFANA_USER": "admin",
+        "GRAFANA_PASSWORD": "your-password"
+      }
+    }
+  }
+}

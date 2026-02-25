@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "uptime-kuma": {
+      "command": "python3",
+      "args": ["/path/to/homelab-mcp-bundle/uptime-kuma-mcp/server.py"],
+      "env": {
+        "KUMA_BASE_URL": "http://your-uptime-kuma:3001",
+        "KUMA_USERNAME": "your-username",
+        "KUMA_PASSWORD": "your-password"
+      }
+    }
+  }
+}

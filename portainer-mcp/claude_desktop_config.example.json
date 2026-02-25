@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "portainer": {
+      "command": "python3",
+      "args": ["/path/to/homelab-mcp-bundle/portainer-mcp/server.py"],
+      "env": {
+        "PORTAINER_URL": "http://your-portainer:9000",
+        "PORTAINER_USER": "admin",
+        "PORTAINER_PASSWORD": "your-password",
+        "PORTAINER_ENDPOINT_ID": "1"
+      }
+    }
+  }
+}

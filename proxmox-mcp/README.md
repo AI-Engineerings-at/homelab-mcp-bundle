@@ -24,7 +24,7 @@ pip install mcp
 ## Konfiguration
 
 ```bash
-export PVE_HOST=10.40.10.14          # Proxmox VE Hostname/IP
+export PVE_HOST=your-proxmox-host          # Proxmox VE Hostname/IP
 export PVE_USER=root@pam             # Benutzer (optional, Standard: root@pam)
 export PVE_PASSWORD=<dein-passwort>  # Passwort (PFLICHT)
 export PVE_VERIFY_SSL=false          # SSL-Verifizierung (optional, Standard: false)
@@ -41,7 +41,7 @@ export PVE_VERIFY_SSL=false          # SSL-Verifizierung (optional, Standard: fa
       "command": "python3",
       "args": ["/path/to/proxmox-mcp/server.py"],
       "env": {
-        "PVE_HOST": "10.40.10.14",
+        "PVE_HOST": "your-proxmox-host",
         "PVE_PASSWORD": "<dein-passwort>"
       }
     }

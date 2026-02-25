@@ -43,7 +43,7 @@ export GRAFANA_TOKEN=glsa_xxxxx               # Service account token (preferred
       "command": "python3",
       "args": ["/path/to/grafana-mcp/server.py"],
       "env": {
-        "GRAFANA_URL": "http://10.40.10.80:3000",
+        "GRAFANA_URL": "http://your-grafana:3000",
         "GRAFANA_USER": "admin",
         "GRAFANA_PASSWORD": "<your-password>"
       }

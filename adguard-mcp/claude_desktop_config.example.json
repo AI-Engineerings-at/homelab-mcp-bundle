@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "adguard": {
+      "command": "python3",
+      "args": ["/path/to/homelab-mcp-bundle/adguard-mcp/server.py"],
+      "env": {
+        "ADGUARD_URL": "http://your-adguard:3053",
+        "ADGUARD_USER": "admin",
+        "ADGUARD_PASSWORD": "your-password"
+      }
+    }
+  }
+}

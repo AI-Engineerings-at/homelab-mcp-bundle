@@ -24,8 +24,8 @@ pip install mcp
 
 ```bash
 export N8N_API_KEY=<dein-n8n-api-key>
-export N8N_BASE_URL=http://10.40.10.80:5678/api/v1   # optional
-export N8N_WEBHOOK_BASE=http://10.40.10.80:5678/webhook  # optional
+export N8N_BASE_URL=http://your-n8n-host:5678/api/v1   # optional
+export N8N_WEBHOOK_BASE=http://your-n8n-host:5678/webhook  # optional
 ```
 
 API Key liegt in: `~/.claude/.n8n-api-key`
@@ -50,8 +50,8 @@ N8N_API_KEY=$(cat ~/.claude/.n8n-api-key) python3 server.py
       "args": ["/home/joe/Playbook01/mcp-servers/n8n-mcp/server.py"],
       "env": {
         "N8N_API_KEY": "<api-key>",
-        "N8N_BASE_URL": "http://10.40.10.80:5678/api/v1",
-        "N8N_WEBHOOK_BASE": "http://10.40.10.80:5678/webhook"
+        "N8N_BASE_URL": "http://your-n8n-host:5678/api/v1",
+        "N8N_WEBHOOK_BASE": "http://your-n8n-host:5678/webhook"
       }
     }
   }

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "ollama": {
+      "command": "python3",
+      "args": ["/path/to/homelab-mcp-bundle/ollama-mcp/server.py"],
+      "env": {
+        "OLLAMA_BASE_URL": "http://localhost:11434"
+      }
+    }
+  }
+}
