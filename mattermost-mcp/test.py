@@ -7,14 +7,17 @@ Testet alle 5 Tools direkt (ohne MCP Protokoll).
 import os
 import sys
 
-# Token aus Umgebung oder direkt
-os.environ.setdefault("MM_TOKEN", os.environ.get("MM_LISA01_TOKEN", "pd5bcjnin3gi5bsuoqi4atyoyc"))
+# Set MM_TOKEN before running: export MM_TOKEN=your-mattermost-token
+if not os.environ.get("MM_TOKEN"):
+    print("ERROR: Set MM_TOKEN environment variable before running tests.")
+    sys.exit(1)
 
 # Import nach Token-Setup
 from server import channels_list, posts_read, posts_create, users_list, posts_search
 
-ECHO_LOG_CHANNEL = "1trxzu41pbfc3qd8cxfmsyus8c"
-TEAM_ID = "yhtr94a73pd7tmwg6arr34k1ow"
+# Replace with your own channel and team IDs
+ECHO_LOG_CHANNEL = os.environ.get("MM_TEST_CHANNEL_ID", "your-channel-id")
+TEAM_ID = os.environ.get("MM_TEAM_ID", "your-team-id")
 
 def run_tests():
     print("=" * 60)

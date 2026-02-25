@@ -18,9 +18,9 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 # Konfiguration
-MM_BASE_URL = os.environ.get("MM_BASE_URL", "http://your-mattermost-host:8065/api/v4")
+MM_BASE_URL = os.environ.get("MM_BASE_URL", "http://10.40.10.83:8065/api/v4")
 MM_TOKEN = os.environ.get("MM_TOKEN", "")
-MM_TEAM_ID = os.environ.get("MM_TEAM_ID", "yhtr94a73pd7tmwg6arr34k1ow")
+MM_TEAM_ID = os.environ.get("MM_TEAM_ID", "")
 
 mcp = FastMCP("mattermost-mcp")
 
@@ -221,7 +221,7 @@ if __name__ == "__main__":
 
     if not MM_TOKEN:
         print("FEHLER: MM_TOKEN Umgebungsvariable nicht gesetzt!", file=sys.stderr)
-        print("Beispiel: export MM_TOKEN=pd5bcjnin3gi5bsuoqi4atyoyc", file=sys.stderr)
+        print("Beispiel: export MM_TOKEN=your-mattermost-bot-token", file=sys.stderr)
         sys.exit(1)
 
     print(f"Mattermost MCP Server startet...", file=sys.stderr)

@@ -21,7 +21,7 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 # Configuration
-ADGUARD_URL = os.environ.get("ADGUARD_URL", "http://your-adguard-host:3053")
+ADGUARD_URL = os.environ.get("ADGUARD_URL", "http://10.40.10.80:3053")
 ADGUARD_USER = os.environ.get("ADGUARD_USER", "admin")
 ADGUARD_PASSWORD = os.environ.get("ADGUARD_PASSWORD", "")
 

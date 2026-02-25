@@ -20,7 +20,7 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 # Configuration
-PVE_HOST = os.environ.get("PVE_HOST", "your-proxmox-host")
+PVE_HOST = os.environ.get("PVE_HOST", "10.40.10.14")
 PVE_BASE_URL = os.environ.get("PVE_BASE_URL", f"https://{PVE_HOST}:8006/api2/json")
 PVE_USER = os.environ.get("PVE_USER", "root@pam")
 PVE_PASSWORD = os.environ.get("PVE_PASSWORD", "")

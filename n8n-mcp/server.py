@@ -19,9 +19,9 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 # Konfiguration
-N8N_BASE_URL = os.environ.get("N8N_BASE_URL", "http://your-n8n-host:5678/api/v1")
+N8N_BASE_URL = os.environ.get("N8N_BASE_URL", "http://10.40.10.80:5678/api/v1")
 N8N_API_KEY = os.environ.get("N8N_API_KEY", "")
-N8N_WEBHOOK_BASE = os.environ.get("N8N_WEBHOOK_BASE", "http://your-n8n-host:5678/webhook")
+N8N_WEBHOOK_BASE = os.environ.get("N8N_WEBHOOK_BASE", "http://10.40.10.80:5678/webhook")
 
 mcp = FastMCP("n8n-mcp")
 

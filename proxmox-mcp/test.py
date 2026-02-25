@@ -8,8 +8,10 @@ import os
 import sys
 import json
 
-# PVE Password setzen falls nicht gesetzt
-os.environ.setdefault("PVE_PASSWORD", "05061991jf")
+# Set PVE_PASSWORD before running: export PVE_PASSWORD=yourpassword
+if not os.environ.get("PVE_PASSWORD"):
+    print("ERROR: Set PVE_PASSWORD environment variable before running tests.")
+    sys.exit(1)
 
 from server import nodes_list, vms_list, vm_status, vm_resources
 

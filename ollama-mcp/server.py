@@ -17,7 +17,7 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 # Configuration
-OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://your-ollama-host:11434")
+OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://10.40.10.80:11434")
 OLLAMA_DEFAULT_MODEL = os.environ.get("OLLAMA_DEFAULT_MODEL", "llama3.2:3b")
 
 mcp = FastMCP("ollama-mcp")

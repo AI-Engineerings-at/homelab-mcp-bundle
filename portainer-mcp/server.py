@@ -19,7 +19,7 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 # Configuration
-PORTAINER_URL = os.environ.get("PORTAINER_URL", "http://your-portainer-host:9000")
+PORTAINER_URL = os.environ.get("PORTAINER_URL", "http://10.40.10.80:9000")
 PORTAINER_USER = os.environ.get("PORTAINER_USER", "admin")
 PORTAINER_PASSWORD = os.environ.get("PORTAINER_PASSWORD", "")
 PORTAINER_ENDPOINT_ID = int(os.environ.get("PORTAINER_ENDPOINT_ID", "1"))

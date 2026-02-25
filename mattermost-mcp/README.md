@@ -1,16 +1,16 @@
 # Mattermost MCP Server
 
-Model Context Protocol Server für Mattermost — ermöglicht AI-Agents direkten Zugriff auf Mattermost.
+Model Context Protocol Server for Mattermost — gives AI agents direct access to Mattermost channels, posts, and users.
 
 ## Features
 
-| Tool | Beschreibung |
-|------|--------------|
-| `channels_list` | Alle Channels auflisten (mit Pagination) |
-| `posts_read` | Posts aus Channel lesen (neueste zuerst) |
-| `posts_create` | Neuen Post erstellen (inkl. Thread-Replies) |
-| `users_list` | User auflisten |
-| `posts_search` | Posts nach Stichworten suchen |
+| Tool | Description |
+|------|-------------|
+| `channels_list` | List all channels (with pagination) |
+| `posts_read` | Read posts from a channel (newest first) |
+| `posts_create` | Create a new post (incl. thread replies) |
+| `users_list` | List users |
+| `posts_search` | Search posts by keyword |
 
 ## Installation
 
@@ -18,54 +18,56 @@ Model Context Protocol Server für Mattermost — ermöglicht AI-Agents direkten
 pip install mcp
 ```
 
-## Konfiguration
+## Configuration
 
 ```bash
-export MM_TOKEN=<dein-mattermost-token>
-export MM_BASE_URL=http://10.40.10.83:8065/api/v4   # optional
-export MM_TEAM_ID=yhtr94a73pd7tmwg6arr34k1ow         # optional
+export MM_TOKEN=your-mattermost-bot-token       # required
+export MM_BASE_URL=http://your-mattermost:8065/api/v4   # optional, default shown
+export MM_TEAM_ID=your-team-id                  # optional
 ```
 
-## Nutzung
+## Usage
 
-### Direkt starten (stdio mode — fuer Claude Desktop)
+### Start directly (stdio mode — for Claude Desktop)
 
 ```bash
-MM_TOKEN=pd5bcjnin3gi5bsuoqi4atyoyc python3 server.py
+export MM_TOKEN=your-mattermost-bot-token
+python3 server.py
 ```
 
-### Claude Desktop Konfiguration
+### Claude Desktop Configuration
 
-`~/.claude_desktop_config.json`:
+`~/.config/claude/claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
     "mattermost": {
       "command": "python3",
-      "args": ["/home/joe/Playbook01/mcp-servers/mattermost-mcp/server.py"],
+      "args": ["/path/to/mattermost-mcp/server.py"],
       "env": {
-        "MM_TOKEN": "pd5bcjnin3gi5bsuoqi4atyoyc",
-        "MM_BASE_URL": "http://10.40.10.83:8065/api/v4",
-        "MM_TEAM_ID": "yhtr94a73pd7tmwg6arr34k1ow"
+        "MM_TOKEN": "your-mattermost-bot-token",
+        "MM_BASE_URL": "http://your-mattermost:8065/api/v4",
+        "MM_TEAM_ID": "your-team-id"
       }
     }
   }
 }
 ```
 
-## Test
+## Running Tests
 
 ```bash
-cd /home/joe/Playbook01/mcp-servers/mattermost-mcp
-MM_TOKEN=pd5bcjnin3gi5bsuoqi4atyoyc python3 test.py
+cd mattermost-mcp
+export MM_TOKEN=your-mattermost-bot-token
+export MM_TEST_CHANNEL_ID=your-channel-id
+export MM_TEAM_ID=your-team-id
+python3 test.py
 ```
 
-## Token-Übersicht (Teambot-Tokens)
+## Getting a Mattermost Token
 
-| Bot | Token-Variable |
-|-----|---------------|
-| lisa01 | `MM_LISA01_TOKEN` |
-| claude | `MM_CLAUDE_TOKEN` |
-| jim | `MM_JIM_TOKEN` |
-| gemini | `MM_GEMINI_TOKEN` |
+1. Log in to Mattermost
+2. Go to **Profile → Security → Personal Access Tokens**
+3. Click **Create Token**
+4. Copy the token and set it as `MM_TOKEN`

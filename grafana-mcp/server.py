@@ -21,7 +21,7 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 # Configuration
-GRAFANA_URL = os.environ.get("GRAFANA_URL", "http://your-grafana-host:3000")
+GRAFANA_URL = os.environ.get("GRAFANA_URL", "http://10.40.10.80:3000")
 GRAFANA_USER = os.environ.get("GRAFANA_USER", "admin")
 GRAFANA_PASSWORD = os.environ.get("GRAFANA_PASSWORD", "")
 GRAFANA_TOKEN = os.environ.get("GRAFANA_TOKEN", "")  # API key alternative
