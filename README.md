@@ -1,35 +1,13 @@
-# 🏠 Homelab MCP Bundle — 8 Free MCP Servers for Claude Desktop
+# Homelab MCP Bundle — 8 Free MCP Servers for Claude Desktop
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Stars](https://img.shields.io/github/stars/AI-Engineerings-at/homelab-mcp-bundle?style=flat&color=gold)](https://github.com/AI-Engineerings-at/homelab-mcp-bundle/stargazers)
+[![MCP Compatible](https://img.shields.io/badge/MCP-Claude%20Desktop-brightgreen.svg)](https://modelcontextprotocol.io/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 
 **Control your entire homelab through natural language. No more switching tabs.**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![MCP Compatible](https://img.shields.io/badge/MCP-Claude%20Desktop-green.svg)](https://modelcontextprotocol.io/)
-
-> "Show me all running Docker services" → Portainer MCP: 22 services listed in 0.3s
->
-> "Block ads.example.com" → AdGuard MCP: rule added
->
-> "Are all monitors up?" → Uptime Kuma MCP: 28/28 UP ✅
-
----
-
-## What's Inside
-
-8 production-tested MCP servers covering the most common self-hosted stack:
-
-| Server | Tools | What you can do |
-|--------|-------|-----------------|
-| [portainer-mcp](./portainer-mcp/) | 5 | List Docker Swarm services, stacks, nodes, read logs |
-| [proxmox-mcp](./proxmox-mcp/) | 6 | List VMs/LXCs, check node resources, start/stop/reboot |
-| [n8n-mcp](./n8n-mcp/) | 5 | List workflows, trigger executions, check failed runs |
-| [ollama-mcp](./ollama-mcp/) | 4 | Generate text, chat, list local models, pull new ones |
-| [uptime-kuma-mcp](./uptime-kuma-mcp/) | 3 | Check service status, uptime %, monitor dashboard |
-| [mattermost-mcp](./mattermost-mcp/) | 5 | Read/write channels, search posts, list users |
-| [adguard-mcp](./adguard-mcp/) | 6 | DNS stats, query log, filter lists, block/unblock domains |
-| [grafana-mcp](./grafana-mcp/) | 6 | Query dashboards, run PromQL, check alerts, add annotations |
-
-**40 tools total — all with zero external dependencies beyond `mcp`**
+Ask Claude "Are all my services up?" and get a live status across Portainer, Uptime Kuma, Proxmox, n8n, AdGuard, Grafana, Ollama, and Mattermost — all from one conversation.
 
 ---
 
@@ -52,7 +30,8 @@ cd homelab-mcp-bundle
 
 ### 3. Configure Claude Desktop
 
-Edit `~/.config/claude/claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
+Edit `~/.config/claude/claude_desktop_config.json`
+(macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`)
 
 ```json
 {
@@ -128,69 +107,96 @@ Edit `~/.config/claude/claude_desktop_config.json` (macOS: `~/Library/Applicatio
 }
 ```
 
-Restart Claude Desktop — the servers will appear as tools automatically.
+Restart Claude Desktop — the servers appear as tools automatically.
 
 ---
 
-## What You Can Say to Claude
+## What's Inside
 
-```
-"Show me all VMs on my Proxmox cluster"
-→ proxmox-mcp: vms_list() → 12 VMs/LXCs across 3 nodes
+8 production-tested MCP servers. 40 tools. Zero external dependencies beyond `mcp`.
 
-"Are all my services up?"
-→ uptime-kuma-mcp: monitors_status() → 28/28 UP
-
-"Which n8n workflows failed today?"
-→ n8n-mcp: executions_list(status="error") → 2 failed
-
-"Write to #general: Deployment is done"
-→ mattermost-mcp: posts_create(channel="general", message="Deployment is done")
-
-"Generate a 3-sentence summary of this log with llama3"
-→ ollama-mcp: generate(prompt="...", model="llama3.2:3b")
-
-"Show me all running Docker Swarm services"
-→ portainer-mcp: services_list() → 22 services
-
-"How many DNS queries were blocked today?"
-→ adguard-mcp: stats() → 45,230 queries | 12,847 blocked (28.4%)
-
-"Block ads.example.com"
-→ adguard-mcp: block_domain("ads.example.com") → Rule added
-
-"Show me the current Grafana alerts"
-→ grafana-mcp: alerts_list() → 1 firing: HighMemory on node-1
-```
+| Server | Tools | What you can say |
+|--------|:-----:|-----------------|
+| [portainer-mcp](./portainer-mcp/) | 5 | "Show all running Docker Swarm services" / "Which container has the most restarts?" / "Tail the logs for my n8n service" |
+| [proxmox-mcp](./proxmox-mcp/) | 6 | "List all VMs across my cluster" / "How loaded is pve3 right now?" / "Reboot the UbuntuDesktop VM" |
+| [n8n-mcp](./n8n-mcp/) | 5 | "Which workflows failed today?" / "Trigger the daily report workflow" / "Show me all active automations" |
+| [ollama-mcp](./ollama-mcp/) | 4 | "Summarize this log file with llama3" / "What models do I have locally?" / "Pull mistral:7b" |
+| [uptime-kuma-mcp](./uptime-kuma-mcp/) | 3 | "Are all my services up?" / "What's the uptime for Grafana this month?" / "Show me anything that's currently down" |
+| [mattermost-mcp](./mattermost-mcp/) | 5 | "Post 'Deployment done' to #general" / "What did the team write in #devops today?" / "Search for messages about the last outage" |
+| [adguard-mcp](./adguard-mcp/) | 6 | "How many DNS queries were blocked today?" / "Block ads.youtube-nocookie.com" / "What's my current blocklist count?" |
+| [grafana-mcp](./grafana-mcp/) | 6 | "Are there any firing alerts?" / "Run a PromQL query for CPU usage" / "Add an annotation to the dashboard for tonight's maintenance" |
 
 ---
 
-## Architecture
+## How It Works
+
+Each MCP server runs as a local Python process started and managed by Claude Desktop. Claude sends tool calls via the MCP protocol (stdio), and each server translates them into direct REST API calls to your self-hosted service.
 
 ```
-Claude Desktop
-     |
-     +-- portainer-mcp  -->  Portainer REST API --> Docker Swarm
-     +-- proxmox-mcp    -->  Proxmox VE API (HTTPS, cookie auth)
-     +-- n8n-mcp        -->  n8n REST API v1
-     +-- ollama-mcp     -->  Ollama API (local LLMs)
-     +-- uptime-kuma-mcp-->  Uptime Kuma Status Page API
-     +-- mattermost-mcp -->  Mattermost REST API v4
-     +-- adguard-mcp    -->  AdGuard Home REST API
-     +-- grafana-mcp    -->  Grafana HTTP API (dashboards, PromQL, alerts)
+Claude Desktop (your laptop)
+        |
+        +--[stdio]--> portainer-mcp  --[HTTP]--> Portainer  --> Docker Swarm
+        +--[stdio]--> proxmox-mcp    --[HTTPS]--> Proxmox VE API
+        +--[stdio]--> n8n-mcp        --[HTTP]--> n8n REST API v1
+        +--[stdio]--> ollama-mcp     --[HTTP]--> Ollama (local LLMs)
+        +--[stdio]--> uptime-kuma-mcp --[HTTP]--> Uptime Kuma Status API
+        +--[stdio]--> mattermost-mcp --[HTTP]--> Mattermost REST API v4
+        +--[stdio]--> adguard-mcp    --[HTTP]--> AdGuard Home REST API
+        +--[stdio]--> grafana-mcp    --[HTTP]--> Grafana HTTP API + PromQL
 ```
 
-Each server runs as a local process started by Claude Desktop. Communication is via stdio using the MCP protocol. No cloud dependencies, no proxies — direct API calls to your self-hosted services.
+No cloud. No proxy. No data leaves your network. Each server is independent — use only the ones that match your stack.
 
 ---
 
 ## Requirements
 
-- Python 3.10+
-- `pip install mcp` (the only dependency)
-- Running instances of the services you want to connect
+- **Claude Desktop** (with MCP support enabled)
+- **Python 3.9+** and `pip install mcp` (the only library dependency)
+- **Self-hosted services** you want to connect:
+  - Portainer CE or BE (Docker Swarm or standalone)
+  - Proxmox VE (any recent version)
+  - n8n (self-hosted, API key enabled)
+  - Ollama (local LLM runtime)
+  - Uptime Kuma (status page configured)
+  - Mattermost (self-hosted, bot token)
+  - AdGuard Home
+  - Grafana + Prometheus
 
-Each server works independently — use only the ones you need.
+You don't need all of them — each server is fully independent.
+
+---
+
+## Natural Language Examples
+
+```
+"Show me all VMs on my Proxmox cluster"
+  -> proxmox-mcp: vms_list() -> 12 VMs/LXCs across 3 nodes
+
+"Are all my services up?"
+  -> uptime-kuma-mcp: monitors_status() -> 28/28 UP
+
+"Which n8n workflows failed today?"
+  -> n8n-mcp: executions_list(status="error") -> 2 failed
+
+"Write to #general: Deployment is done"
+  -> mattermost-mcp: posts_create(channel="general", ...) -> Posted
+
+"Summarize this error log with llama3"
+  -> ollama-mcp: generate(prompt="...", model="llama3.2:3b") -> Summary
+
+"Show me all running Docker Swarm services"
+  -> portainer-mcp: services_list() -> 22 services across 3 nodes
+
+"How many DNS queries were blocked today?"
+  -> adguard-mcp: stats() -> 45,230 queries | 12,847 blocked (28.4%)
+
+"Block ads.example.com"
+  -> adguard-mcp: block_domain("ads.example.com") -> Rule added
+
+"Show current Grafana alerts"
+  -> grafana-mcp: alerts_list() -> 1 firing: HighMemory on node-1
+```
 
 ---
 
@@ -207,18 +213,18 @@ Each server works independently — use only the ones you need.
 
 ---
 
-## Want the Full Homelab AI Stack?
+## Get the Full Homelab AI Stack
 
 This bundle is part of **Playbook 01 — Der Lokale AI-Stack**, a complete guide to building a production-grade, self-hosted AI infrastructure with Docker Swarm, n8n automation, Grafana monitoring, and Claude Desktop integration.
 
-**[Get the full Playbook at ai-engineering.at](https://www.ai-engineering.at)**
+**[Get Playbook 01 at ai-engineering.at](https://www.ai-engineering.at)**
 
 Includes:
 - Complete Docker Swarm setup (Portainer, Grafana, Prometheus, n8n, Ollama)
-- 13 ready-to-import n8n AI workflows
+- 13 ready-to-import n8n AI automation workflows
 - 22 Grafana dashboards for homelab monitoring
-- AIOps alert pipeline with LLM analysis
-- Step-by-step setup guide (DE/EN)
+- AIOps alert pipeline with local LLM analysis
+- Step-by-step setup guide (70 pages, DE/EN)
 
 ---
 
