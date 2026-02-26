@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px; height: 720px; overflow: hidden;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    color: #F8FAFC;
+  }
+  .container {
+    width: 1280px; height: 720px;
+    background: linear-gradient(135deg, #0F172A 0%, #0C1A14 50%, #0F172A 100%);
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 60px;
+  }
+  .container::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(16,185,129,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(16,185,129,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .container::after {
+    content: '';
+    position: absolute;
+    width: 700px; height: 500px;
+    background: radial-gradient(ellipse, rgba(16,185,129,0.14) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  /* Stack visualization */
+  .stack-visual {
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 8px;
+    opacity: 0.2;
+    z-index: 1;
+  }
+  .stack-layer {
+    padding: 12px 24px;
+    border-left: 3px solid #10B981;
+    color: #10B981;
+    font-size: 16px; font-weight: 600;
+    background: rgba(16,185,129,0.05);
+  }
+  .badge-price {
+    position: absolute;
+    top: 40px; right: 50px;
+    background: #10B981;
+    color: white;
+    font-size: 28px; font-weight: 800;
+    padding: 12px 28px;
+    border-radius: 50px;
+    z-index: 10;
+    box-shadow: 0 4px 20px rgba(16,185,129,0.4);
+  }
+  .badge-category {
+    position: absolute;
+    top: 40px; left: 50px;
+    background: rgba(16,185,129,0.15);
+    border: 1px solid rgba(16,185,129,0.4);
+    color: #6EE7B7;
+    font-size: 16px; font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 50px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 10;
+  }
+  .content { position: relative; z-index: 10; text-align: center; }
+  .icon {
+    font-size: 88px;
+    margin-bottom: 24px;
+    display: block;
+    filter: drop-shadow(0 0 30px rgba(16,185,129,0.8));
+  }
+  h1 {
+    font-size: 60px; font-weight: 800;
+    color: #F8FAFC;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .subtitle {
+    font-size: 26px; font-weight: 400;
+    color: #94A3B8;
+    margin-bottom: 40px;
+  }
+  .tech-row {
+    display: flex; gap: 16px; justify-content: center;
+    margin-bottom: 20px;
+  }
+  .tech-chip {
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.35);
+    color: #6EE7B7;
+    font-size: 18px; font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 10px;
+  }
+  .features {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  }
+  .feature {
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.25);
+    color: #A7F3D0;
+    font-size: 16px; font-weight: 500;
+    padding: 9px 18px;
+    border-radius: 8px;
+  }
+  .footer {
+    position: absolute;
+    bottom: 32px;
+    color: #475569;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 10;
+  }
+</style>
+
+<style>
+  html, body { background: #0F172A !important; width: 1280px !important; height: 400px !important; overflow: hidden !important; }
+  body { width: 1280px !important; height: 400px !important; }
+  .container { width: 1280px !important; height: 400px !important; padding: 30px 60px !important; }
+  .icon { font-size: 56px !important; margin-bottom: 12px !important; }
+  h1 { font-size: 44px !important; margin-bottom: 8px !important; }
+  .subtitle { font-size: 20px !important; margin-bottom: 20px !important; }
+  .feature { font-size: 14px !important; padding: 6px 14px !important; }
+  .badge-price { font-size: 22px !important; padding: 8px 20px !important; top: 24px !important; right: 36px !important; }
+  .badge-category { font-size: 13px !important; padding: 6px 16px !important; top: 24px !important; left: 36px !important; }
+  .footer { bottom: 18px !important; font-size: 12px !important; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="stack-visual">
+    <div class="stack-layer">Ollama LLM</div>
+    <div class="stack-layer">n8n Automation</div>
+    <div class="stack-layer">Grafana Monitor</div>
+    <div class="stack-layer">Docker Swarm</div>
+    <div class="stack-layer">Proxmox VE</div>
+  </div>
+  <div class="badge-category">Komplett-Guide</div>
+  <div class="badge-price">EUR 49</div>
+  <div class="content">
+    <span class="icon">🏠</span>
+    <h1>Lokaler AI-Stack Playbook</h1>
+    <p class="subtitle">Ollama · Docker · n8n · Grafana — Schritt für Schritt</p>
+    <div class="tech-row">
+      <div class="tech-chip">Self-Hosted</div>
+      <div class="tech-chip">DSGVO-konform</div>
+      <div class="tech-chip">Homelab-ready</div>
+    </div>
+    <div class="features">
+      <span class="feature">✅ Ollama LLM Setup</span>
+      <span class="feature">✅ Docker Swarm</span>
+      <span class="feature">✅ Monitoring Stack</span>
+      <span class="feature">✅ Keine Cloud nötig</span>
+    </div>
+  </div>
+  <div class="footer">ai-engineering.at · DACH · No Cloud Required</div>
+</div>
+</body>
+</html>

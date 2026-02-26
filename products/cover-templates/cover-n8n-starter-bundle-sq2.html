@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px; height: 720px; overflow: hidden;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    color: #F8FAFC;
+  }
+  .container {
+    width: 1280px; height: 720px;
+    background: linear-gradient(135deg, #0F172A 0%, #0C1A14 50%, #0F172A 100%);
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 60px;
+  }
+  .container::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(16,185,129,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(16,185,129,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .container::after {
+    content: '';
+    position: absolute;
+    width: 700px; height: 500px;
+    background: radial-gradient(ellipse, rgba(16,185,129,0.14) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  /* Workflow visualization */
+  .stack-visual {
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 8px;
+    opacity: 0.2;
+    z-index: 1;
+  }
+  .stack-layer {
+    padding: 12px 24px;
+    border-left: 3px solid #10B981;
+    color: #10B981;
+    font-size: 16px; font-weight: 600;
+    background: rgba(16,185,129,0.05);
+  }
+  .badge-price {
+    position: absolute;
+    top: 40px; right: 50px;
+    background: #10B981;
+    color: white;
+    font-size: 28px; font-weight: 800;
+    padding: 12px 28px;
+    border-radius: 50px;
+    z-index: 10;
+    box-shadow: 0 4px 20px rgba(16,185,129,0.4);
+  }
+  .badge-category {
+    position: absolute;
+    top: 40px; left: 50px;
+    background: rgba(16,185,129,0.15);
+    border: 1px solid rgba(16,185,129,0.4);
+    color: #6EE7B7;
+    font-size: 16px; font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 50px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 10;
+  }
+  .content { position: relative; z-index: 10; text-align: center; }
+  .icon {
+    font-size: 88px;
+    margin-bottom: 24px;
+    display: block;
+    filter: drop-shadow(0 0 30px rgba(16,185,129,0.8));
+  }
+  h1 {
+    font-size: 60px; font-weight: 800;
+    color: #F8FAFC;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .subtitle {
+    font-size: 26px; font-weight: 400;
+    color: #94A3B8;
+    margin-bottom: 40px;
+  }
+  .tech-row {
+    display: flex; gap: 16px; justify-content: center;
+    margin-bottom: 20px;
+  }
+  .tech-chip {
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.35);
+    color: #6EE7B7;
+    font-size: 18px; font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 10px;
+  }
+  .features {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  }
+  .feature {
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.25);
+    color: #A7F3D0;
+    font-size: 16px; font-weight: 500;
+    padding: 9px 18px;
+    border-radius: 8px;
+  }
+  .footer {
+    position: absolute;
+    bottom: 32px;
+    color: #475569;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 10;
+  }
+</style>
+
+<style>
+  /* Square override for Gumroad (800x800) */
+  html { width: 800px !important; height: 800px !important; background: #0F172A !important; overflow: hidden !important; margin: 0 !important; padding: 0 !important; }
+  body { width: 800px !important; height: 800px !important; background: #0F172A !important; overflow: hidden !important; margin: 0 !important; padding: 0 !important; }
+  .container { width: 800px !important; height: 800px !important; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="stack-visual">
+    <div class="stack-layer">Stripe Payment Alert</div>
+    <div class="stack-layer">Mattermost AI Bot</div>
+    <div class="stack-layer">Email Classifier</div>
+    <div class="stack-layer">Webhook Trigger</div>
+    <div class="stack-layer">Ollama LLM</div>
+  </div>
+  <div class="badge-category">n8n Automation</div>
+  <div class="badge-price">EUR 29</div>
+  <div class="content">
+    <span class="icon">⚡</span>
+    <h1>n8n Starter Bundle</h1>
+    <p class="subtitle">3 Ready-to-Use AI Automation Workflows</p>
+    <div class="tech-row">
+      <div class="tech-chip">Self-Hosted</div>
+      <div class="tech-chip">DSGVO-konform</div>
+      <div class="tech-chip">Import-Ready</div>
+    </div>
+    <div class="features">
+      <span class="feature">✅ Stripe Payment Alerts</span>
+      <span class="feature">✅ Mattermost AI Bot</span>
+      <span class="feature">✅ AI Email Classifier</span>
+      <span class="feature">✅ Sofort einsatzbereit</span>
+    </div>
+  </div>
+  <div class="footer">ai-engineering.at · DACH · Sofort einsatzbereit</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px; height: 720px; overflow: hidden;
+    background: #0F172A;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    color: #F8FAFC;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .container {
+    width: 1280px; height: 720px;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 60px;
+  }
+  .container::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(99,102,241,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.08) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .container::after {
+    content: '';
+    position: absolute;
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(16,185,129,0.15) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  .badge-price {
+    position: absolute;
+    top: 40px; right: 50px;
+    background: #10B981;
+    color: white;
+    font-size: 28px; font-weight: 800;
+    padding: 12px 28px;
+    border-radius: 50px;
+    letter-spacing: 0.5px;
+    z-index: 10;
+    box-shadow: 0 4px 20px rgba(16,185,129,0.4);
+  }
+  .badge-category {
+    position: absolute;
+    top: 40px; left: 50px;
+    background: rgba(16,185,129,0.2);
+    border: 1px solid rgba(16,185,129,0.5);
+    color: #6EE7B7;
+    font-size: 16px; font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 50px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 10;
+  }
+  .content { position: relative; z-index: 10; text-align: center; }
+  .icon {
+    font-size: 88px;
+    margin-bottom: 24px;
+    display: block;
+    filter: drop-shadow(0 0 30px rgba(16,185,129,0.6));
+  }
+  h1 {
+    font-size: 64px; font-weight: 800;
+    color: #F8FAFC;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+  .subtitle {
+    font-size: 26px; font-weight: 400;
+    color: #94A3B8;
+    margin-bottom: 40px;
+  }
+  .features {
+    display: flex; gap: 16px; justify-content: center;
+    flex-wrap: wrap;
+  }
+  .feature {
+    background: rgba(16,185,129,0.15);
+    border: 1px solid rgba(16,185,129,0.3);
+    color: #6EE7B7;
+    font-size: 17px; font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 8px;
+  }
+  .footer {
+    position: absolute;
+    bottom: 32px;
+    color: #475569;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="badge-category">DSGVO / AI Act</div>
+  <div class="badge-price">EUR 79</div>
+  <div class="content">
+    <span class="icon">🛡️</span>
+    <h1>DSGVO Art. 30 Bundle</h1>
+    <p class="subtitle">KI-Compliance Templates fur DACH-Unternehmen</p>
+    <div class="features">
+      <span class="feature">✅ Verarbeitungsverzeichnis</span>
+      <span class="feature">✅ DPIA KI-Systeme</span>
+      <span class="feature">✅ EU AI Act Readiness</span>
+      <span class="feature">✅ AVV Checkliste</span>
+    </div>
+  </div>
+  <div class="footer">ai-engineering.at · DACH · Sofort einsatzbereit</div>
+</div>
+</body>
+</html>
