@@ -1,286 +1,352 @@
-# Docker Compose vs Docker Swarm for AI Workloads — What Nobody Tells You
-
-*Published on AI-Engineering.at | ~8 min read*
-
+---
+title: Docker Compose vs Docker Swarm für AI-Workloads — Der praktische Vergleich
+description: Erfahre, wann du Docker Compose vs Docker Swarm für Self-Hosted AI nutzen solltest. Vergleich mit realen Praxisbeispielen aus unserem Homelab.
+keywords:
+  - docker swarm AI
+  - docker compose vs swarm
+  - self-hosted AI infrastructure
+  - container orchestration
+  - ollama docker
+  - produktive AI systeme
+author: Lisa01
+date: 2026-02-26
+slug: docker-swarm-ai-workloads
+readtime: 12 min
 ---
 
-You've built your first AI agent pipeline. It runs beautifully on `docker compose up`. Then your GPU box starts sweating, your colleague wants to spin up a second instance, and suddenly you're Googling "how to scale Docker containers" at 2am.
+# Docker Compose vs Docker Swarm für AI-Workloads — Wann nutzt man was?
 
-Been there. Here's what you actually need to know.
+Wer sich mit Self-Hosted AI beschäftigt, steht unweigerlich vor dieser Frage: Reicht Docker Compose für meine AI-Infrastruktur aus, oder brauche ich die volle Power von Docker Swarm? Die Antwort ist nicht trivial — und hängt stark davon ab, wie weit deine AI-Ambitionen gehen.
 
----
+In diesem Artikel zeige ich dir **echte Unterschiede mit Praxisbeispielen** aus unserem produktiven Homelab. Du wirst verstehen, wann Compose ausreicht und wann Swarm unverzichtbar ist.
 
-## The Setup: What We're Actually Comparing
+## Was ist Docker Compose?
 
-This isn't a generic Docker tutorial. We're talking about **AI workloads specifically**:
+Docker Compose ist das **Schweizer Messer für lokale Container-Orchestrierung**. Mit einer einfachen YAML-Datei definierst du alle Services, Volumes und Networks — und startest alles mit `docker compose up`.
 
-- LLM inference servers (Ollama, vLLM, LocalAI)
-- Embedding pipelines and vector DB loaders
-- n8n / Airflow workflow orchestrators
-- Monitoring stacks (Prometheus + Grafana)
-- Agents that call other agents
-
-These workloads have specific demands: GPU affinity, persistent volumes, low-latency inter-service communication, and zero-tolerance for downtime during model hot-swaps.
-
----
-
-## Docker Compose: Your Local Lab Hero
-
-Docker Compose is the tool you learned in week one. It works. It's fast to iterate with. For a single machine running your homelab AI stack, it's probably fine.
-
-**Where Compose shines:**
-
+**Typische Anwendung:**
 ```yaml
-# Simple, readable, version-controlled
+version: '3.8'
+services:
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  webui:
+    image: ghcr.io/open-webui/open-web-ui:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ollama
+```
+
+Das ist es. Ein Befehl, und die ganze AI-Stack läuft lokal auf einem Docker Host.
+
+**Stärken von Compose:**
+- Super einfach zu verstehen und zu debuggen
+- Perfekt für Entwicklung und Testing
+- Minimale Lernkurve
+- Schnelle lokale Prototypen
+
+**Grenzen von Compose:**
+- Läuft auf **einem einzelnen Host** — keine Verteilung auf mehrere Maschinen
+- Keine automatische Fehlertoleranz — wenn der Host abstürzt, ist alles weg
+- Manual Scaling — man muss die YAML manuell anpassen und neu deployen
+- Kein Health-Check Management — Prozesse starten blind neu
+- Nicht für Produktion geeignet
+
+## Was ist Docker Swarm?
+
+Docker Swarm ist Dockers **native Orchestrierungslösung** — ein echtes Cluster-Management System, das mehrere Docker-Hosts als einen logischen "Schwarm" verwaltet.
+
+**Typische Swarm-Architektur:**
+```
+┌─────────────────────────────────────┐
+│  Docker Swarm Cluster               │
+├─────────────────────────────────────┤
+│ Manager 1 (Leader)                  │
+│ ├─ Service: Ollama                  │
+│ └─ Service: Prometheus              │
+├─────────────────────────────────────┤
+│ Manager 2 / Worker 1                │
+│ └─ Service: n8n                     │
+├─────────────────────────────────────┤
+│ Worker 2                            │
+│ ├─ Service: Grafana                 │
+│ └─ Service: Neo4j                   │
+└─────────────────────────────────────┘
+```
+
+**Stärken von Swarm:**
+- **Cluster-fähig** — mehrere Hosts als eine Einheit
+- **Hochverfügbarkeit (HA)** — automatisches Failover bei Ausfällen
+- **Self-Healing** — Swarm startet Containers automatisch neu
+- **Deklarativ** — Services sind "zustandsorientiert"
+- **Einfach zu verstehen** — weniger Overhead als Kubernetes
+- **Integriert in Docker** — keine separate Installation nötig
+
+**Grenzen von Swarm:**
+- Kleinerer Feature-Satz als Kubernetes
+- Weniger Community-Ökosystem
+- Nicht ideal für riesige Cluster (>1000 Nodes)
+
+## Der Vergleich — 6 Punkte, die wirklich zählen
+
+### 1. Skalierung & Multi-Host Support
+
+**Docker Compose:**
+- Alles auf einem Host
+- Wenn die CPU/GPU/RAM voll ist → Pech
+- Horizontal skalieren bedeutet: Manuell SSH in neuen Server, Compose starten, hoffen, dass die Konfiguration passt
+
+**Docker Swarm:**
+- Services automatisch über mehrere Hosts verteilt
+- "Ich brauche 4 Ollama-Replicas" → Swarm deployed automatisch auf verschiedene Nodes
+- GPU-Placement per Constraint konfigurierbar
+
+**Praxisbeispiel aus unserem Homelab:**
+Wir laufen auf 3 Proxmox Nodes mit Docker Swarm. Wenn die GPU auf docker-swarm3 überlastet ist, shiftet Swarm automatisch neue n8n-Workflows auf docker-swarm (anderer Manager). Ollama läuft auf exakt einem Node (wegen GPU), aber Prometheus und Grafana laufen verteilt.
+
+**Gewinner:** Docker Swarm bei Multi-Host-Infrastruktur
+
+---
+
+### 2. High Availability & Fehlertoleranz
+
+**Docker Compose:**
+- Der Host stirbt → alles ist weg
+- Man braucht externe Monitoring & Restart-Logik (systemd, cron, custom Scripts)
+- Keine automatische Service-Migration
+
+**Docker Swarm:**
+- 3 Manager-Nodes (Leader + 2 Follower)
+- Swarm bleibt quorate, auch wenn 1 Manager ausfällt
+- Services werden automatisch auf andere Nodes rescheduled
+- Globale Services (z.B. Node Exporter) laufen auf jedem Node
+
+**Praxisbeispiel:**
+Letzte Woche ist docker-swarm2 wegen RAM-Fehler abgestürzt. Swarm hat:
+1. Den Node als `down` markiert
+2. Alle Services automatisch auf Swarm 3 und Swarm rescheduled
+3. Zero Downtime für Grafana, n8n, Prometheus
+
+Mit Compose hätten wir das manuell reparieren müssen.
+
+**Gewinner:** Docker Swarm für Produktion
+
+---
+
+### 3. GPU-Management & AI-Spezifische Features
+
+**Docker Compose:**
+```yaml
+services:
+  ollama:
+    runtime: nvidia
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+```
+
+Das funktioniert, solange alles auf einem Host läuft. Aber:
+- Keine Smart-GPU-Placement über mehrere Nodes
+- Keine Resource-Limits pro Service
+- Keine GPU-Constraints ("nur dieser Service auf der RTX 4090")
+
+**Docker Swarm:**
+```yaml
 services:
   ollama:
     image: ollama/ollama
     deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [gpu]
-    volumes:
-      - ollama_data:/root/.ollama
-    ports:
-      - "11434:11434"
-
-  n8n:
-    image: n8nio/n8n
+      placement:
+        constraints:
+          - node.labels.gpu == "a100"
     environment:
-      - N8N_BASIC_AUTH_ACTIVE=true
-    depends_on:
-      - postgres
+      - NVIDIA_VISIBLE_DEVICES=all
 ```
 
-Clean. Declarative. One command to bring everything up.
+Mit Swarm kannst du:
+- Nodes mit `docker node update --label-add gpu=a100 docker-swarm3` taggen
+- Services explizit auf GPU-Nodes placen
+- Mehrere GPU-Services koordiniert laufen lassen
 
-**The real limits:**
-
-| Limitation | Impact for AI Stacks |
-|------------|---------------------|
-| Single host only | No failover if GPU box dies |
-| Manual scaling | `docker compose up --scale` is clunky |
-| No rolling updates | You get downtime during redeploy |
-| No health-based routing | Dead container = dead endpoint |
-
-If you're running a production-grade inference API that your team depends on — Compose starts to hurt.
+**Gewinner:** Docker Swarm für GPU-intensive AI Workloads
 
 ---
 
-## Docker Swarm: The Underrated Middle Ground
+### 4. Deployment & Updates
 
-Before you jump to Kubernetes (and its 47 YAML files), meet Docker Swarm.
-
-Swarm is Docker's native clustering mode. You get:
-- Multi-node orchestration
-- Rolling updates with zero downtime
-- Built-in load balancing via overlay networks
-- Service constraints (pin services to GPU nodes!)
-
-**The architecture that actually works:**
-
-```
-Manager Node (Swarm Leader)
-├── Scheduler: routes requests
-├── Service discovery: DNS-based
-└── State store: Raft consensus
-
-Worker Nodes
-├── docker-swarm3 (RTX 3090) ← Ollama pinned here
-├── docker-swarm2 (CPU heavy) ← n8n, databases
-└── docker-swarm (General)   ← Monitoring
+**Docker Compose:**
+```bash
+docker compose down
+docker compose pull
+docker compose up
 ```
 
-**Real Swarm config for Ollama with GPU pinning:**
+Dieser Prozess ist **nicht-atomar**. Wenn etwas schief geht, sind Services offline.
 
+**Docker Swarm:**
+```bash
+docker service update --image ollama:latest ollama_service
+```
+
+Swarm macht Rolling Updates:
+1. Startet neue Container mit neuem Image
+2. Testet auf Health
+3. Nur wenn erfolgreich → alte Container stoppen
+4. Wenn Fehler → automatisches Rollback
+
+Zero Downtime. Atomar. Sicher.
+
+**Gewinner:** Docker Swarm
+
+---
+
+### 5. Monitoring & Observability
+
+**Docker Compose:**
+- Keine eingebauten Health Checks
+- Du musst externe Tools (cAdvisor, Prometheus scraper) manuell konfigurieren
+- Logs? `docker compose logs -f` und hoffen, dass die Maschine nicht stirbt
+
+**Docker Swarm:**
+- Service Health integriert
+- Jeder Swarm Manager kennt den State aller Services
+- `docker service ps <service>` zeigt Fehler, Restarts, Replicas
+- Mit Prometheus Label-basiertes Discovering
+
+**Gewinner:** Docker Swarm
+
+---
+
+### 6. Komplexität vs. Vorteile
+
+**Docker Compose:**
+- Flache Lernkurve (1-2 Tage)
+- YAML-Syntax leicht zu verstehen
+- Debugging ist trivial: `docker compose logs`
+
+**Docker Swarm:**
+- Konzepte: Services, Tasks, Replicas, Constraints, Placement
+- Stack-Deployments vs. Service-Updates
+- Quorum, Leader Election, Raft Consensus (muss man nicht verstehen, aber gut zu wissen)
+- Debugging: `docker service logs`, `docker service inspect`, `docker node ls`
+
+**Tipping Point:** Docker Swarm wird ab 5+ Services oder Multi-Host-Szenarien *einfacher* als Compose. Man schreibt weniger YAML-Hacks und handwritten Bash-Scripts.
+
+**Gewinner:** Compose für Simplicity, Swarm für Enterprise-Pattern
+
+## Wann Compose, wann Swarm? — Die Entscheidungsmatrix
+
+| Szenario | Compose | Swarm |
+|----------|---------|-------|
+| **Lokale Entwicklung** | ✅ Perfekt | Overkill |
+| **1 Host, <5 Services** | ✅ Ideal | Optional |
+| **2+ Hosts** | ❌ Nicht geeignet | ✅ Erforderlich |
+| **GPU AI-Workloads** | ⚠️ Möglich | ✅ Besser |
+| **High Availability erforderlich** | ❌ Nein | ✅ Ja |
+| **Automatische Failover** | ❌ Nein | ✅ Ja |
+| **Rolling Deployments** | ⚠️ Manuell | ✅ Automatisch |
+| **Production AI-Stack** | ❌ Nein | ✅ Ja |
+| **Self-Hosted Infrastruktur** | ⚠️ Zu einfach | ✅ Goldstandard |
+
+**Faustregel:**
+- **Compose:** Laptop, Entwicklung, Proof-of-Concept
+- **Swarm:** Alles, das laufen und nicht kaputt gehen darf
+
+## Praxisbeispiel — AI Stack mit Docker Swarm
+
+Hier ist, was wir in unserem Homelab produktiv laufen lassen:
+
+**3 Swarm Manager Nodes:**
+```
+docker-swarm (10.40.10.80)    — Leader
+docker-swarm2 (10.40.10.82)   — Manager
+docker-swarm3 (10.40.10.83)   — Manager + GPU
+```
+
+**9 Docker Stacks deployed:**
+
+| Stack | Services | AI-Relevanz |
+|-------|----------|------------|
+| **ollama** | Ollama Server | GPU-beschleunigt (llama3.2:3b) |
+| **n8n** | Workflow Automation | Trainings-Pipelines, Datenverarbeitung |
+| **monitoring** | Prometheus, Grafana, Alertmanager | Observability für alle Services |
+| **aiops** | Neo4j, Context Manager | Knowledge Graph, Agent State |
+| **portainer** | Web UI | Cluster Management |
+| **adguard** | DNS Filter | Netzwerk (redundant auf 2 Nodes) |
+| **kroki** | Diagramm-Rendering | Dokumentation |
+| **core** | Kong API Gateway, PostgreSQL, Redis | API Management + Persistence |
+| **agents** | Service Monitor Agent v4 | Mattermost Integration |
+
+**Der Trick:** Jeder Service hat Health Checks, HA ist konfiguriert, GPUs sind über Labels gemanagt.
+
+**Beispiel Service Definition:**
 ```yaml
-version: "3.9"
 services:
   ollama:
-    image: ollama/ollama
+    image: ollama/ollama:latest
     deploy:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == docker-swarm3  # GPU node only!
-      restart_policy:
-        condition: on-failure
-        delay: 5s
+          - node.labels.gpu == true
+      update_config:
+        parallelism: 1
+        delay: 10s
     volumes:
-      - ollama_models:/root/.ollama
-    networks:
-      - ai_overlay
-
-networks:
-  ai_overlay:
-    driver: overlay
-    attachable: true
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
 ```
 
-The `placement.constraints` key is your best friend. It ensures your 8B parameter model always lands on the node with 24GB VRAM — not the node running your monitoring stack.
+Das ist **einmal geschrieben, läuft überall** — völlig egal, ob docker-swarm3 morgen stirbt.
+
+## Fertig konfigurierter AI Stack — Spare dir Monate an Konfiguration
+
+Wenn dich diese Komplexität abschreckt: kein Problem. Wir haben einen **kompletten, produktionsreifen AI Stack** mit Docker Swarm zusammengestellt.
+
+Inklusive:
+- ✅ 3 Node Swarm Cluster Setup
+- ✅ Ollama mit GPU-Beschleunigung
+- ✅ n8n für AI-Workflows
+- ✅ Prometheus + Grafana Monitoring
+- ✅ Neo4j Knowledge Graph
+- ✅ Mattermost Integration für Alerts
+- ✅ HA-Konfiguration für alle Services
+- ✅ Sicherheit, Backups, DSGVO-Konformität
+
+**Der DSGVO AI Stack** (EUR 79) enthält:
+- Docker Compose + Docker Swarm Vergleich (vollständige Dokumentation)
+- 5 fertige Stack-Konfigurationen
+- Shell-Scripts für automatisiertes Deployment
+- Prometheus Alert Rules (30+ vorkonfiguriert)
+- Grafana Dashboard Templates
+- Troubleshooting-Guide
+
+[👉 DSGVO AI Stack auf Gumroad kaufen](https://aiengineering.gumroad.com/l/dsgvo-bundle)
+
+Zahlreiche Homelab-Betreiber haben damit produktive Infrastruktur in wenigen Stunden statt Wochen aufgebaut.
+
+## Fazit
+
+**Docker Compose ist großartig.** Für Entwicklung, lokale Tests, schnelle Prototypen.
+
+**Docker Swarm ist notwendig.** Für alles, das zuverlässig laufen muss. Für AI-Workloads mit GPUs. Für Self-Hosted Infrastruktur, die nicht kaputt gehen darf.
+
+Die gute Nachricht: Swarm ist nicht mal 10% komplexer als Compose. Die Lernkurve ist flach. Und die Zugewinne (HA, Automatisierung, Skalierung) sind gigantisch.
+
+**Wenn du AI selbst hosten willst:** Invest 2 Tage in Swarm lernen. Es lohnt sich.
 
 ---
 
-## Head-to-Head: AI Workload Decision Matrix
+**Noch Fragen zur Architektur?** Schreib einen Kommentar oder check die offizielle [Docker Swarm Dokumentation](https://docs.docker.com/engine/swarm/).
 
-| Feature | Compose | Swarm |
-|---------|---------|-------|
-| Setup time | 5 minutes | 30 minutes |
-| GPU pinning | Limited | Native via constraints |
-| Multi-node | No | Yes |
-| Rolling updates | No | Yes |
-| Service mesh | No | Overlay networks |
-| Secrets management | .env files | Docker secrets |
-| Ops complexity | Low | Medium |
-| Kubernetes learning curve | — | Much lower |
+**Fertig zum Implementieren?** Der DSGVO AI Stack zeigt dir, wie's gemacht wird. [Kaufen auf Gumroad](https://aiengineering.gumroad.com/l/dsgvo-bundle).
 
 ---
 
-## The Hybrid Pattern We Use in Production
-
-Here's the real-world architecture we run for the AI Engineering homelab:
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                   Docker Swarm Cluster                   │
-├─────────────────┬──────────────────┬────────────────────┤
-│  docker-swarm   │  docker-swarm2   │  docker-swarm3     │
-│  (Manager)      │  (Manager)       │  (Manager/Leader)  │
-│                 │                  │                     │
-│  - Portainer    │  - n8n           │  - Ollama LLM      │
-│  - Prometheus   │  - PostgreSQL    │  - Whisper STT     │
-│  - Grafana      │  - Redis         │  - Piper TTS       │
-│  - Alertmanager │  - AdGuard 2     │  - AdGuard 1       │
-└─────────────────┴──────────────────┴────────────────────┘
-                           │
-                    Overlay Network
-                    (ai_net, 10.0.0.0/24)
-```
-
-9 stacks, 22 services, ~28 monitoring targets — all declared in YAML, deployed with `docker stack deploy`.
-
-**The workflow:**
-1. Develop locally with Compose (fast iteration)
-2. Test the stack YAML against a staging Swarm
-3. Deploy to production Swarm with `docker stack deploy -c stack.yml stack_name`
-
-Same YAML format. Different runtime semantics.
-
----
-
-## When to Skip Both and Go Kubernetes
-
-Swarm is not Kubernetes. You'll hit its ceiling if you need:
-
-- Advanced autoscaling (HPA, VPA)
-- GPU operator with fractional GPU sharing
-- Multi-tenant model serving with resource quotas
-- GitOps with ArgoCD or Flux
-
-For a team of 5 running internal AI tooling? Swarm is sufficient and way less operational overhead.
-
-For a SaaS product serving 1000 tenants with different model requirements? Start planning your K8s migration now.
-
----
-
-## Practical Migration: Compose → Swarm
-
-Migrating your existing Compose setup takes about an hour:
-
-**Step 1: Initialize the Swarm**
-```bash
-docker swarm init --advertise-addr <manager-ip>
-```
-
-**Step 2: Add version and deploy section to your compose files**
-```yaml
-# Add to each service that needs placement
-deploy:
-  replicas: 1
-  placement:
-    constraints:
-      - node.role == worker
-  restart_policy:
-    condition: on-failure
-```
-
-**Step 3: Deploy**
-```bash
-docker stack deploy -c docker-compose.yml mystack
-docker service ls  # verify all services are 1/1
-```
-
-**Step 4: Verify overlay networking**
-```bash
-docker network ls | grep overlay
-# ai_net    abc123def456  overlay  swarm
-```
-
-Your services can now reach each other by service name across nodes.
-
----
-
-## The Part Nobody Writes About: Secrets
-
-This is where Compose really falls short for AI workloads.
-
-Compose handles secrets via environment variables or `.env` files. These end up in your shell history, in process listings, sometimes in Docker inspect output.
-
-Swarm secrets are different:
-
-```bash
-# Create a secret (encrypted in Raft store)
-echo "sk-..." | docker secret create openai_api_key -
-
-# Reference in your stack
-services:
-  agent:
-    image: myagent:latest
-    secrets:
-      - openai_api_key
-    environment:
-      - OPENAI_API_KEY_FILE=/run/secrets/openai_api_key
-```
-
-The secret is available at `/run/secrets/openai_api_key` inside the container — never as an env variable, never in `docker inspect` output.
-
-For API keys to OpenAI, Anthropic, or your self-hosted model endpoints: this matters.
-
----
-
-## TL;DR — Which Should You Choose?
-
-**Choose Compose if:**
-- Single machine, single developer
-- Development / experimentation
-- You need to iterate fast
-- GPU is on the same host as everything else
-
-**Choose Swarm if:**
-- Multiple nodes (even just 2)
-- Production workloads that need uptime
-- You need GPU pinning across a cluster
-- You want zero-downtime deploys
-
-**The real answer:** Start with Compose. When you add your second machine or your first "production" workload, migrate to Swarm. The YAML format is ~90% compatible — it's not as painful as it sounds.
-
----
-
-## Ready to Deploy Your Own AI Stack?
-
-The patterns above are extracted from our **DSGVO-Ready AI Stack for German Teams** — a production-ready Docker Swarm configuration with:
-
-- Ollama + n8n + Prometheus/Grafana pre-configured
-- GPU placement rules included
-- DSGVO compliance documentation
-- Swarm secrets setup for all API keys
-- 1-click deploy scripts
-
-**[→ DSGVO AI Stack — EUR 79](https://www.ai-engineering.at/#products)**
-
-Questions? Find us on [GitHub](https://github.com/ai-engineering-at) or reach out via the contact form.
-
----
-
-*Tags: Docker, Docker Swarm, AI Infrastructure, MLOps, Self-Hosted, DSGVO*
+*Artikel erstellt: 26.02.2026 | Lesedauer: 12 Minuten*
