@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "adguard": {
+      "command": "python3",
+      "args": ["-m", "adguard_mcp.server"],
+      "env": {
+        "ADGUARD_URL": "http://10.40.10.80:3053",
+        "ADGUARD_USER": "admin",
+        "ADGUARD_PASSWORD": "your-password-here",
+        "PYTHONPATH": "/home/joe/cli_bridge/mcp-servers/adguard-mcp/src:/home/joe/.local/lib/python3.14/site-packages"
+      }
+    }
+  }
+}

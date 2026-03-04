@@ -249,8 +249,7 @@ I've packaged the full architecture into a blueprint:
 
 Available at **ai-engineering.at** (EUR 19, one-time).
 
-The MCP servers used in this setup are open source:
-👉 **[homelab-mcp-bundle on GitHub](https://github.com/AI-Engineerings-at/homelab-mcp-bundle)** — 8 servers, 40 tools, Python only.
+The MCP servers used in this setup are open source: **[github.com/AI-Engineerings-at/homelab-mcp-bundle](https://github.com/AI-Engineerings-at/homelab-mcp-bundle)** — 8 servers, 51 tools, MIT licensed, free forever.
 
 ---
 
@@ -277,7 +276,7 @@ Meta? A little bit. But also: proof that it works.*
 - [ ] Tags setzen: `ai, automation, selfhosted, claudecode`
 - [ ] Canonical URL eintragen (falls Blog auf ai-engineering.at existiert)
 - [ ] Links prüfen: ai-engineering.at Produkt-URL eintragen
-- [x] GitHub Open Source Link eingebaut: https://github.com/AI-Engineerings-at/homelab-mcp-bundle
+- [x] GitHub Link ergänzt: github.com/AI-Engineerings-at/homelab-mcp-bundle
 - [ ] Artikel auf dev.to Draft speichern, vor Publish nochmal prüfen
 
 ## A/B Titel-Varianten

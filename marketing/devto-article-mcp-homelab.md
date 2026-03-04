@@ -339,18 +339,16 @@ Most commercial MCP servers route your infra data through their cloud. We delibe
 ## Installation
 
 ```bash
-# Clone the repo
-git clone https://github.com/AI-Engineerings-at/Playbook01
-cd Playbook01/mcp-servers
-
 # Install all 6 servers
-pip install -e mattermost-mcp/
-pip install -e n8n-mcp/
-pip install -e proxmox-mcp/
-pip install -e uptime-kuma-mcp/
-pip install -e ollama-mcp/
-pip install -e portainer-mcp/
+pip install mattermost-mcp
+pip install n8n-mcp
+pip install proxmox-mcp
+pip install uptime-kuma-mcp
+pip install ollama-mcp
+pip install portainer-mcp
 ```
+
+Full setup instructions and config templates are available at **[ai-engineering.at](https://ai-engineering.at)**.
 
 Each server is a standalone Python package. Install only what you need.
 
@@ -382,8 +380,8 @@ We're trying to change that, one server at a time.
 
 ## Links
 
-- **GitHub**: [github.com/AI-Engineerings-at/Playbook01](https://github.com/AI-Engineerings-at/Playbook01) — ⭐ Stars help us know people care
-- **Website**: [ai-engineering.at](https://ai-engineering.at) — Newsletter for updates (new servers, tutorials, homelab AI patterns)
+- **GitHub (Free)**: [github.com/AI-Engineerings-at/homelab-mcp-bundle](https://github.com/AI-Engineerings-at/homelab-mcp-bundle) — MIT, clone and use today
+- **Website**: [ai-engineering.at](https://ai-engineering.at) — Full setup guide, config templates, and newsletter for updates
 - **License**: MIT — use freely, modify, even sell
 
 ---

@@ -1,7 +1,18 @@
 # Launch Checklist — ai-engineering.at
 
 > Erstellt: 2026-02-26 | @lisa01
-> Status: BEREIT ZUM ABHAKEN
+> Status: BEREIT ZUM ABHAKEN | Aktualisiert: 2026-02-26
+
+## AKTUELLER STATUS
+
+| Check | Status | Wer |
+|-------|--------|-----|
+| Copy Review 20/20 Seiten | ✅ DONE (Commit d8aa9a6) | @john01 |
+| RSS Feed live | ✅ DONE | @john01 |
+| HTTP Status Alle Seiten | ⏳ Ausstehend | @john01 |
+| Lighthouse Scores | ⏳ Ausstehend | @john01 |
+| OG Image Preview | ⏳ Ausstehend | @john01 |
+| Broken Links Check | ⏳ Ausstehend | @john01 |
 
 ---
 
@@ -40,6 +51,7 @@
 - [ ] HN-Draft final (hn-draft.md — korrekte URLs)
 - [ ] Dev.to Account verifiziert, Artikel als Draft gespeichert
 - [ ] Reddit-Account Karma ausreichend (r/selfhosted, r/homelab)
+- [ ] Product Hunt: Draft erstellt, "upcoming" aktiviert (PRODUCT_HUNT_DRAFT.md)
 
 ---
 
@@ -49,6 +61,7 @@
 
 | Zeit | Platform | Aktion |
 |------|----------|--------|
+| 00:01 PST | Product Hunt | Launch live stellen (Di/Mi empfohlen), Maker Comment posten |
 | 08:00 UTC | Hacker News | Show HN Post live stellen |
 | 08:15 UTC | Twitter/X | Thread Option A posten |
 | 08:30 UTC | LinkedIn | Launch Post posten |

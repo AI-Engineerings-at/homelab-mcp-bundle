@@ -22,12 +22,14 @@ FILES_DIR = os.path.join(os.path.dirname(__file__), "files")
 # Produkt -> Datei Mapping
 # NOTE: Files must exist in ./files/ directory before product is purchasable
 PRODUCT_MAP = {
-    "playbook01":         "lead-magnet.pdf",           # EUR 49 - Playbook (uses lead-magnet.pdf until full PDF ready)
-    "lead-magnet":        "lead-magnet.pdf",            # Free lead magnet
-    "n8n-bundle":         "n8n-starter-bundle.zip",     # EUR 19 - n8n Workflow Bundle (TODO: upload file)
-    "grafana-pack":       "grafana-dashboard-pack.zip", # EUR 29 - Grafana Dashboard Pack (TODO: upload file)
-    "dsgvo-template":     "dsgvo-art30-template.zip",   # EUR 12 - DSGVO Art.30 Template (TODO: upload file)
-    "ai-agent-blueprint": "ai-agent-team-blueprint.zip",# EUR 19 - AI Agent Team Blueprint (TODO: upload file)
+    "playbook01":         "Der-Lokale-AI-Stack-Playbook.pdf",    # EUR 49 - Playbook (2.4MB)
+    "lead-magnet":        "lead-magnet.pdf",                     # Free lead magnet
+    "n8n-bundle":         "n8n-bundle.zip",                      # EUR 29 - n8n Workflow Bundle (13 WF)
+    "grafana-pack":       "grafana-dashboard-pack.zip",          # EUR 39 - Grafana Dashboard Pack
+    "dsgvo-template":     "dsgvo-art30-template.zip",            # EUR 79 - DSGVO Art.30 Template
+    "ai-agent-blueprint": "ai-agent-team-blueprint.zip",         # EUR 19 - AI Agent Team Blueprint
+    "komplett-bundle":    "ai-engineering-komplett-bundle.zip",   # EUR 149 - Alle 5 Produkte
+    "homelab-mcp-bundle": "Homelab-MCP-Bundle-Cheat-Sheet.pdf",  # FREE - MCP Cheat Sheet
 }
 
 

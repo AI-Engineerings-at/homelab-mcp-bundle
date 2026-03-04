@@ -4,11 +4,15 @@ Reddit PRAW Posting Script — ai-engineering.at
 Usage: python3 reddit_praw_post.py --post austria_kmu
        python3 reddit_praw_post.py --list
        python3 reddit_praw_post.py --dry-run --all-dach
+       python3 reddit_praw_post.py --post austria_kmu --mm-fallback   # post draft to Mattermost
+       python3 reddit_praw_post.py --mm-fallback --all-dach           # all DACH posts as MM drafts
 """
 import argparse
 import sys
 import os
 import time
+import json
+import urllib.request
 
 # === CREDENTIALS (set via env vars or edit here) ===
 CLIENT_ID = os.environ.get('REDDIT_CLIENT_ID', 'REPLACE_WITH_CLIENT_ID')
@@ -276,6 +280,53 @@ Anyone else doing LLM-augmented alerting? What's your stack?''',
 }
 
 
+def post_to_mattermost_draft(post_id: str, subreddit: str, title: str, text: str):
+    """Post Reddit draft to Mattermost #echo_log for manual copy-paste."""
+    mm_token = os.environ.get('MM_LISA01_TOKEN', '')
+    mm_base = 'http://10.40.10.83:8065/api/v4'
+    channel_id = '1trxzu41pbfc3qd8cxfmsyus8c'  # #echo_log
+
+    if not mm_token:
+        print("[MM-FALLBACK] MM_LISA01_TOKEN not set — printing draft to stdout instead:")
+        print("=" * 70)
+        print(f"**REDDIT DRAFT** — r/{subreddit} | Post-ID: `{post_id}`")
+        print(f"**Titel:** {title}")
+        print("-" * 70)
+        print(text)
+        print("=" * 70)
+        return
+
+    message = (
+        f"**REDDIT DRAFT** (kein API-Key — bitte manuell posten)\n\n"
+        f"**Subreddit:** r/{subreddit}\n"
+        f"**Post-ID:** `{post_id}`\n"
+        f"**Titel:** {title}\n\n"
+        f"---\n\n"
+        f"{text}\n\n"
+        f"---\n"
+        f"*Copy-paste den Text oben in https://www.reddit.com/r/{subreddit}/submit*"
+    )
+
+    payload = json.dumps({'channel_id': channel_id, 'message': message}).encode('utf-8')
+    req = urllib.request.Request(
+        f'{mm_base}/posts',
+        data=payload,
+        headers={
+            'Authorization': f'Bearer {mm_token}',
+            'Content-Type': 'application/json',
+        },
+        method='POST'
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            result = json.loads(resp.read())
+            print(f"[MM-FALLBACK] Draft gepostet in #echo_log — Post-ID: {result.get('id', '?')}")
+    except Exception as e:
+        print(f"[MM-FALLBACK] Fehler beim Posten: {e}")
+        print(f"\nDraft-Text:\n{'=' * 60}")
+        print(f"r/{subreddit} — {title}\n\n{text}")
+
+
 def post_to_reddit(subreddit: str, title: str, text: str, dry_run: bool = False):
     if dry_run:
         print(f"[DRY RUN] Would post to r/{subreddit}:")
@@ -311,7 +362,19 @@ def main():
     parser.add_argument('--list', action='store_true', help='List available posts')
     parser.add_argument('--dry-run', action='store_true', help='Preview without posting')
     parser.add_argument('--all-dach', action='store_true', help='Post all DACH posts with rate-limiting')
+    parser.add_argument('--mm-fallback', action='store_true',
+                        help='Post draft text to Mattermost #echo_log for manual copy-paste (no Reddit API needed)')
     args = parser.parse_args()
+
+    # Auto-detect missing credentials → force mm-fallback
+    has_credentials = (
+        CLIENT_ID != 'REPLACE_WITH_CLIENT_ID' and
+        CLIENT_SECRET != 'REPLACE_WITH_CLIENT_SECRET' and
+        PASSWORD != 'REPLACE_WITH_PASSWORD'
+    )
+    if not has_credentials and not args.dry_run and not args.mm_fallback:
+        print("[INFO] Reddit-Credentials fehlen — aktiviere automatisch --mm-fallback")
+        args.mm_fallback = True
 
     if args.list:
         print("Available posts:")
@@ -323,11 +386,15 @@ def main():
         dach_posts = ['austria_kmu', 'germany_dsgvo', 'de_technik', 'de_edv']
         for post_id in dach_posts:
             post = POSTS[post_id]
-            print(f"\nPosting '{post_id}' to r/{post['subreddit']}...")
-            post_to_reddit(post['subreddit'], post['title'], post['text'], args.dry_run)
-            if not args.dry_run and post_id != dach_posts[-1]:
-                print("Waiting 10 min before next post (rate limiting)...")
-                time.sleep(600)
+            if args.mm_fallback:
+                print(f"\n[MM-FALLBACK] Draft '{post_id}' → Mattermost...")
+                post_to_mattermost_draft(post_id, post['subreddit'], post['title'], post['text'])
+            else:
+                print(f"\nPosting '{post_id}' to r/{post['subreddit']}...")
+                post_to_reddit(post['subreddit'], post['title'], post['text'], args.dry_run)
+                if not args.dry_run and post_id != dach_posts[-1]:
+                    print("Waiting 10 min before next post (rate limiting)...")
+                    time.sleep(600)
         return
 
     if args.post:
@@ -337,7 +404,10 @@ def main():
             print("Use --list to see available posts.")
             sys.exit(1)
         subreddit = args.subreddit or post['subreddit']
-        post_to_reddit(subreddit, post['title'], post['text'], args.dry_run)
+        if args.mm_fallback:
+            post_to_mattermost_draft(args.post, subreddit, post['title'], post['text'])
+        else:
+            post_to_reddit(subreddit, post['title'], post['text'], args.dry_run)
         return
 
     parser.print_help()

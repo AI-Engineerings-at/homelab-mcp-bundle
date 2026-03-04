@@ -6,7 +6,7 @@ import json
 import os
 import subprocess
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -18,7 +18,7 @@ def _format_error(code: str, message: str) -> str:
 
 
 def _now_iso() -> str:
-    return datetime.now(tz=timezone.utc).isoformat()
+    return datetime.now(tz=UTC).isoformat()
 
 
 def _atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -113,26 +113,9 @@ class BridgeState:
             return default_state
 
     def save(self) -> None:
-        # Trim handled_ids to last 500
         handled_ids = self.data.get("handled_ids", [])
         if len(handled_ids) > 500:
             self.data["handled_ids"] = handled_ids[-500:]
-
-        # Cleanup old pending_posts (keep max 100, remove oldest by updated_at)
-        pending = self.data.get("pending_posts", {})
-        if len(pending) > 100:
-            sorted_items = sorted(pending.items(), key=lambda x: x[1].get("updated_at", ""))
-            for post_id, _ in sorted_items[:-100]:
-                pending.pop(post_id, None)
-
-        # Cleanup old completed tasks (keep max 50, remove oldest by completed_at)
-        tasks = self.data.get("active_tasks", {})
-        completed = [(k, v) for k, v in tasks.items() if v.get("status") == "completed"]
-        if len(completed) > 50:
-            sorted_completed = sorted(completed, key=lambda x: x[1].get("completed_at", 0))
-            for task_name, _ in sorted_completed[:-50]:
-                tasks.pop(task_name, None)
-
         _atomic_write_json(self.state_file, self.data)
 
     @property
@@ -356,11 +339,7 @@ class BaseBridge:
 
             data = self.mm_get(endpoint)
             order = data.get("order", [])
-            if not isinstance(order, list):
-                order = []
             posts_dict = data.get("posts", {})
-            if not isinstance(posts_dict, dict):
-                posts_dict = {}
             if not order:
                 break
 
@@ -393,12 +372,6 @@ class BaseBridge:
         try:
             user = self.mm_get(f"/users/{user_id}")
             name = str(user.get("username", user_id[:8]))
-            # Limit cache size to prevent unbounded memory growth
-            if len(self._username_cache) >= 1000:
-                # Remove oldest 100 entries (simple FIFO approximation)
-                keys_to_remove = list(self._username_cache.keys())[:100]
-                for key in keys_to_remove:
-                    self._username_cache.pop(key, None)
             self._username_cache[user_id] = name
             return name
         except Exception:
@@ -458,9 +431,21 @@ class BaseBridge:
 
         if result.returncode != 0:
             detail = stderr or stdout or "no output"
+            detail_lower = detail.lower()
             detail = detail.replace("\n", " ")[:300]
+
+            # Categorize common CLI errors
+            if any(kw in detail_lower for kw in ("429", "rate limit", "quota", "no capacity")):
+                code = "E-CLI-QUOTA"
+            elif any(kw in detail_lower for kw in ("permission denied", "sandbox", "policy block")):
+                code = "E-CLI-PERMISSION"
+            elif any(kw in detail_lower for kw in ("unauthorized", "auth", "token expired", "401")):
+                code = "E-CLI-AUTH"
+            else:
+                code = "E-CLI-EXIT"
+
             return _format_error(
-                "E-CLI-EXIT",
+                code,
                 f"command exited with code {result.returncode}: {detail}",
             )
 
@@ -519,14 +504,6 @@ class BaseBridge:
         for post_id in pending_ids:
             pending = self.state.data.get("pending_posts", {}).get(post_id, {})
             create_at = int(pending.get("created_at", 0) or 0)
-            attempts = int(pending.get("attempts", 0) or 0)
-
-            # Give up on posts that exceeded max retry attempts
-            if attempts >= self.config.retry_max_attempts:
-                print(f"[WARN] Giving up on pending post {post_id[:8]}... after {attempts} attempts")
-                self.state.mark_handled(post_id, create_at)
-                continue
-
             delivered = self._deliver_pending_post(post_id)
             if delivered:
                 self.state.mark_handled(post_id, create_at)
@@ -593,7 +570,7 @@ class BaseBridge:
                 continue
 
             sender = self.get_username(user_id)
-            ts = datetime.fromtimestamp(create_at / 1000, tz=timezone.utc).strftime("%H:%M:%S")
+            ts = datetime.fromtimestamp(create_at / 1000, tz=UTC).strftime("%H:%M:%S")
 
             try:
                 task_info = self.detect_task(post)
@@ -642,11 +619,8 @@ class BaseBridge:
             except Exception as exc:
                 self._error_count += 1
                 error_text = _format_error("E-STATE-PROCESS", f"{type(exc).__name__}: {exc}")
-                print(f"[{ts}] {error_text}")
                 self.update_heartbeat("degraded", error=error_text)
-                # Mark as handled to prevent infinite retry loops on broken posts
-                self.state.mark_handled(post_id, create_at)
-                self.state.save()
+                # Do not mark as handled here; keep post for next cycle.
 
     # ---- Polling loop ----
 

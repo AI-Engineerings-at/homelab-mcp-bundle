@@ -3,23 +3,26 @@
 from __future__ import annotations
 
 import argparse
-import sys
 
 from .config import load_config
 
 BACKENDS = {
-    "codex": "cli_bridge.backends.codex:CodexBridge",
+    "codex": "cli_bridge.backends.openai_codex:OpenAICodexBridge",
+    "codex_monitor": "cli_bridge.backends.codex:CodexBridge",
     "copilot": "cli_bridge.backends.copilot:CopilotBridge",
     "gemini": "cli_bridge.backends.gemini:GeminiBridge",
     "claude": "cli_bridge.backends.claude:ClaudeBridge",
     "lisa01": "cli_bridge.backends.claude:ClaudeBridge",
-    "echo_log": "cli_bridge.backends.echo_log:EchoLogBridge",
 }
 
 
 def get_bridge_class(backend: str):
     """Import and return the bridge class for a backend."""
     if backend == "codex":
+        from .backends.openai_codex import OpenAICodexBridge
+
+        return OpenAICodexBridge
+    if backend == "codex_monitor":
         from .backends.codex import CodexBridge
 
         return CodexBridge
@@ -38,14 +41,7 @@ def get_bridge_class(backend: str):
 
     if backend == "lisa01":
         from .backends.claude import ClaudeBridge
-
         return ClaudeBridge
-
-    if backend == "echo_log":
-        from .backends.echo_log import EchoLogBridge
-
-        return EchoLogBridge
-
     raise ValueError(f"Unknown backend: {backend}. Available: {list(BACKENDS.keys())}")
 
 
@@ -102,10 +98,7 @@ Examples:
         print(f"[E-CONFIG-LOAD] Failed to load config: {exc}")
         return 1
 
-    if args.interval is not None:
-        if args.interval <= 0:
-            print("[E-CONFIG-POLL] --interval must be > 0")
-            return 1
+    if args.interval:
         config.poll_interval = args.interval
 
     BridgeClass = get_bridge_class(args.backend)

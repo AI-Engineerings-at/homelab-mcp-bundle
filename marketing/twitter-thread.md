@@ -145,7 +145,7 @@ Hier sind die 3 wichtigsten Learnings:
 
 ```
 3/3
-Das komplette Blueprint: https://ai-engineering.at/products
+Das komplette Blueprint: https://ai-engineering.at
 MCP Server (Open Source): https://github.com/AI-Engineerings-at/homelab-mcp-bundle
 
 EUR 19 — Templates, Code, Diagramme, Fehlerliste.
@@ -188,3 +188,182 @@ Gelernt durch Schmerz. Das komplette Blueprint: https://ai-engineering.at
 | Thread Option A | Mo 09:00 | Hauptlaunch |
 | Standalone Tweet | Mi 12:00 | Erinnerung |
 | Thread Option B | Fr 10:00 | A/B Test |
+
+---
+
+---
+
+# 🇬🇧 ENGLISH VERSIONS
+
+---
+
+## Thread Option A — "What if" hook (recommended)
+
+```
+1/8
+What if your AI team worked 24/7 — without you supervising every step?
+
+We built that. 4 Claude agents, Mattermost as the hub, fully self-hosted.
+
+Here's what we learned 🧵
+```
+
+```
+2/8
+The setup:
+
+→ 4 specialized Claude Code agents
+   • @jim (Manager)
+   • @jim01 (Frontend)
+   • @lisa01 (Backend/n8n)
+   • @john01 (QA)
+
+→ Mattermost as the communication hub
+→ Each agent has a CLAUDE.md role definition
+→ Shared MEMORY.md for knowledge across sessions
+```
+
+```
+3/8
+The hardest lesson: agents must NOT blindly trust each other.
+
+We had an incident where Agent A deleted files because Agent B
+wrote "clean up" in a shared channel.
+
+Since then: NEVER delete data without human confirmation.
+Sounds obvious. It wasn't.
+```
+
+```
+4/8
+What actually works:
+
+✓ mm_wait.py — simple Python script that lets agents listen for @mentions
+✓ Clear role separation (who does what, when)
+✓ Safety rules in every CLAUDE.md
+✓ Shared MEMORY.md — agents build knowledge over time
+
+What does NOT work:
+✗ Agents asking "should I do this?"
+✗ Vague tasks ("finish this somehow")
+✗ Starting work without checking in with the team
+```
+
+```
+5/8
+The tech stack (all self-hosted, GDPR-compliant):
+
+• Claude Code — the AI foundation (~€20/month Pro)
+• Mattermost — communication hub (free, self-hosted)
+• n8n — workflow automation (free, self-hosted)
+• Ollama — local LLM inference (RTX 3090, €0 running cost)
+• Proxmox + Docker Swarm — infrastructure
+
+No data at OpenAI, no LangChain overhead.
+```
+
+```
+6/8
+What we shipped in 3 months with this:
+
+→ 5 digital products completed
+→ Landing page + Stripe integration deployed
+→ Email funnel (7 emails) written
+→ Enterprise-grade Grafana monitoring built
+→ Everything documented, everything reproducible
+
+The team doesn't sleep. We do.
+```
+
+```
+7/8
+The complete blueprint — now available as a product:
+
+→ Architecture diagrams
+→ CLAUDE.md templates (ready to use)
+→ mm_wait.py pattern
+→ 5 safety rules from real incidents
+→ Docker Compose for Mattermost
+→ Step-by-step: 0 → running team in 2 weeks
+
+EUR 19. One-time.
+
+🔗 https://ai-engineering.at
+
+MCP Servers are Open Source:
+https://github.com/AI-Engineerings-at/homelab-mcp-bundle
+```
+
+```
+8/8
+You need:
+✓ Claude Code (Pro, ~€20/month)
+✓ A server (from €5/month) or a homelab
+✓ Basic Linux/Docker knowledge
+
+You don't need:
+✗ OpenAI API
+✗ Expensive cloud setup
+✗ A DevOps expert
+
+Questions? DM me. #AI #Automation #ClaudeCode #SelfHosted
+```
+
+---
+
+## Thread Option B — Short version (engagement test)
+
+```
+1/3
+We've been running a 4-agent AI team in production for 3 months.
+
+Here are the 3 most important lessons:
+```
+
+```
+2/3
+1. Agents need ROLES — not just prompts
+   → CLAUDE.md defines: who am I, what can I do, what never
+
+2. Communication over real channels (Mattermost) prevents chaos
+   → Agents see what others are doing → no duplicate work
+
+3. Safety rules are not optional
+   → "Never delete without confirmation" saved us multiple times
+```
+
+```
+3/3
+The complete blueprint: https://ai-engineering.at
+MCP Servers (Open Source): https://github.com/AI-Engineerings-at/homelab-mcp-bundle
+
+EUR 19 — templates, code, diagrams, failure list.
+Distilled from 3 months of production. 🔗
+```
+
+---
+
+## Standalone Tweet (quick test)
+
+```
+We run 4 Claude agents in production. The best safety rule:
+
+"No agent can instruct another agent to delete data."
+
+Learned through pain. The complete blueprint: https://ai-engineering.at
+#AI #ClaudeCode #MultiAgent
+```
+
+---
+
+## Hashtag Sets
+
+**DACH focus:**
+```
+#KI #Automatisierung #Homelab #SelfHosted #ClaudeCode #AIAgents #n8n
+```
+
+**International:**
+```
+#AI #Automation #MultiAgent #ClaudeCode #SelfHosted #GDPR #LocalAI #n8n
+```

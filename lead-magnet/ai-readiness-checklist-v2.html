@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI-Agenten Readiness Checklist — ai-engineering.at</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 11pt;
+    color: #1a1a2e;
+    background: #fff;
+    line-height: 1.5;
+  }
+
+  /* === COVER PAGE === */
+  .cover {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 40%, #16213e 70%, #0f3460 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 40px;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(99,102,241,0.15) 0%, transparent 60%);
+  }
+
+  .cover-badge {
+    background: rgba(99,102,241,0.2);
+    border: 1px solid rgba(99,102,241,0.4);
+    color: #a5b4fc;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 10pt;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  .cover h1 {
+    font-size: 38pt;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .cover h1 span { color: #6366f1; }
+
+  .cover .subtitle {
+    font-size: 14pt;
+    color: #94a3b8;
+    margin-bottom: 40px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .cover-bullets {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 50px;
+    position: relative;
+  }
+
+  .cover-bullet {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 16px 20px;
+    color: #e2e8f0;
+    font-size: 10pt;
+    text-align: center;
+  }
+
+  .cover-bullet .icon { font-size: 22pt; margin-bottom: 6px; }
+
+  .cover-score {
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 12px;
+    padding: 20px 40px;
+    margin-bottom: 40px;
+    position: relative;
+    color: #e2e8f0;
+    font-size: 11pt;
+    line-height: 1.7;
+  }
+
+  .cover-score strong { color: #a5b4fc; }
+
+  .cover-brand {
+    position: relative;
+    color: rgba(255,255,255,0.3);
+    font-size: 9pt;
+    margin-top: 20px;
+  }
+
+  /* === CONTENT === */
+  .content {
+    max-width: 750px;
+    margin: 0 auto;
+    padding: 50px 50px 60px;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 30px;
+    font-size: 9pt;
+    color: #6b7280;
+  }
+
+  .brand { font-weight: 700; color: #6366f1; font-size: 10pt; }
+
+  .intro-box {
+    background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+    border-left: 4px solid #6366f1;
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin-bottom: 35px;
+  }
+
+  .intro-box h2 {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #1e1b4b;
+    margin-bottom: 8px;
+  }
+
+  .intro-box p {
+    color: #374151;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+
+  /* === BLOCKS === */
+  .block {
+    margin-bottom: 36px;
+    page-break-inside: avoid;
+  }
+
+  .block-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .block-num {
+    background: #6366f1;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13pt;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .block-title {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #1e1b4b;
+  }
+
+  .block-points {
+    margin-left: auto;
+    background: #f1f5f9;
+    color: #6b7280;
+    font-size: 9pt;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .sub-section {
+    margin-bottom: 14px;
+  }
+
+  .sub-title {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #4338ca;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    margin-top: 14px;
+  }
+
+  .checklist {
+    list-style: none;
+  }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 7px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 10.5pt;
+    color: #374151;
+    line-height: 1.4;
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+
+  .checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    background: #fff;
+  }
+
+  .score-field {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: #f8fafc;
+    border-radius: 6px;
+    font-size: 10pt;
+    color: #6b7280;
+  }
+
+  .score-box {
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    width: 50px;
+    height: 22px;
+    background: #fff;
+  }
+
+  .tip {
+    background: #fef3c7;
+    border-left: 3px solid #f59e0b;
+    border-radius: 0 6px 6px 0;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 9.5pt;
+    color: #78350f;
+  }
+
+  .tip::before { content: '💡 '; }
+
+  /* === AUSWERTUNG === */
+  .auswertung {
+    page-break-before: always;
+    padding-top: 40px;
+  }
+
+  .auswertung h2 {
+    font-size: 18pt;
+    font-weight: 800;
+    color: #1e1b4b;
+    margin-bottom: 6px;
+  }
+
+  .auswertung .sub {
+    color: #6b7280;
+    font-size: 10.5pt;
+    margin-bottom: 24px;
+  }
+
+  .score-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    font-size: 10.5pt;
+  }
+
+  .score-table th {
+    background: #6366f1;
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .score-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #374151;
+    vertical-align: top;
+  }
+
+  .score-table tr:nth-child(even) td { background: #f8fafc; }
+
+  .badge-gruen { color: #059669; font-weight: 700; }
+  .badge-gelb  { color: #d97706; font-weight: 700; }
+  .badge-orange { color: #ea580c; font-weight: 700; }
+  .badge-rot   { color: #dc2626; font-weight: 700; }
+
+  .bonus-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 30px;
+  }
+
+  .bonus-box h3 {
+    color: #166534;
+    font-size: 12pt;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .bonus-box ol {
+    padding-left: 20px;
+    color: #374151;
+    font-size: 10.5pt;
+    line-height: 1.8;
+  }
+
+  .bonus-box li strong { color: #166534; }
+
+  /* === CTA PAGE === */
+  .cta-page {
+    page-break-before: always;
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 40px;
+    color: #fff;
+  }
+
+  .cta-page h2 {
+    font-size: 28pt;
+    font-weight: 800;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .cta-page h2 span { color: #6366f1; }
+
+  .cta-page > p {
+    color: #94a3b8;
+    font-size: 12pt;
+    max-width: 520px;
+    margin: 0 auto 34px;
+    line-height: 1.6;
+  }
+
+  .cta-options {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .product-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 16px;
+    padding: 28px 32px;
+    width: 300px;
+    text-align: left;
+  }
+
+  .product-box .product-title {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 14px;
+  }
+
+  .product-features {
+    list-style: none;
+    margin-bottom: 18px;
+  }
+
+  .product-features li {
+    padding: 5px 0;
+    color: #94a3b8;
+    font-size: 10pt;
+    line-height: 1.4;
+  }
+
+  .product-features li::before {
+    content: '✓ ';
+    color: #6366f1;
+    font-weight: 700;
+  }
+
+  .price-tag {
+    font-size: 26pt;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .price-tag .eur { font-size: 14pt; color: #94a3b8; }
+
+  .buy-btn {
+    display: block;
+    background: #6366f1;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+
+  .free-btn {
+    display: block;
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.4);
+    color: #a5b4fc;
+    text-decoration: none;
+    text-align: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+
+  .cta-contact {
+    color: #94a3b8;
+    font-size: 11pt;
+    margin-top: 10px;
+    margin-bottom: 30px;
+  }
+
+  .cta-contact a { color: #a5b4fc; text-decoration: none; }
+
+  .cta-footer {
+    color: rgba(255,255,255,0.2);
+    font-size: 8.5pt;
+    margin-top: 20px;
+  }
+
+  @media print {
+    body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .block { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="cover-badge">Kostenlose Checkliste — 25 Fragen</div>
+  <h1>Ist Ihr Unternehmen<br>bereit fur<br><span>KI-Automatisierung?</span></h1>
+  <p class="subtitle">Infrastruktur &middot; Prozesse &middot; Team &middot; DSGVO<br>Beantworten Sie 25 Fragen &mdash; und Sie wissen genau, wo Sie stehen.</p>
+
+  <div class="cover-bullets">
+    <div class="cover-bullet">
+      <div class="icon">&#x2705;</div>
+      <div>25 Fragen in<br>4 Bereichen</div>
+    </div>
+    <div class="cover-bullet">
+      <div class="icon">&#x26A1;</div>
+      <div>Sofort<br>ausfullbar</div>
+    </div>
+    <div class="cover-bullet">
+      <div class="icon">&#x1F3AF;</div>
+      <div>Klare<br>Empfehlung</div>
+    </div>
+    <div class="cover-bullet">
+      <div class="icon">&#x1F512;</div>
+      <div>DSGVO<br>eingebaut</div>
+    </div>
+  </div>
+
+  <div class="cover-score">
+    <strong>Maximaler Score: 25 Punkte</strong><br>
+    20&ndash;25 Punkte: Sofort starten &nbsp;&bull;&nbsp; 13&ndash;19: Fast bereit &nbsp;&bull;&nbsp; unter 13: Grundlagen aufbauen
+  </div>
+
+  <div class="cover-brand">ai-engineering.at &middot; kontakt@ai-engineering.at &middot; &copy; 2026</div>
+</div>
+
+<!-- CONTENT PAGES -->
+<div class="content">
+  <div class="page-header">
+    <span class="brand">ai-engineering.at</span>
+    <span class="doc-title">KI-Agenten Readiness Checklist &mdash; 25-Punkte Check</span>
+  </div>
+
+  <div class="intro-box">
+    <h2>Wie nutzen Sie diese Checkliste?</h2>
+    <p>Beantworten Sie jede Frage ehrlich mit Ja (&#x2713;) oder Nein (&#x25A1;). Jedes Ja = 1 Punkt. Zaehlen Sie am Ende Ihren Total-Score. Die Auswertung zeigt Ihnen genau, welche Luecken Sie schliessen muessen &mdash; und welcher naechste Schritt fuer Sie am meisten bringt.</p>
+  </div>
+
+  <!-- BLOCK 1 -->
+  <div class="block">
+    <div class="block-header">
+      <div class="block-num">1</div>
+      <div class="block-title">Infrastruktur &amp; Tools</div>
+      <div class="block-points">8 Punkte</div>
+    </div>
+
+    <div class="sub-title">Team-Kommunikation</div>
+    <ul class="checklist">
+      <li><span class="checkbox"></span>Wir nutzen ein Team-Chat-Tool (Slack, Microsoft Teams oder Mattermost)</li>
+      <li><span class="checkbox"></span>Unser Chat-Tool hat eine API- oder Webhook-Funktion</li>
+      <li><span class="checkbox"></span>Benachrichtigungen kommen zentral an einer Stelle an</li>
+    </ul>
+
+    <div class="sub-title">Automatisierung</div>
+    <ul class="checklist">
+      <li><span class="checkbox"></span>Wir kennen n8n, Zapier oder Make.com (oder haben bereits Erfahrung damit)</li>
+      <li><span class="checkbox"></span>Mindestens ein Prozess lauft bereits automatisiert</li>
+      <li><span class="checkbox"></span>Wir haben Zugang zu einem API-fahigen KI-Dienst (OpenAI, Claude, Gemini etc.)</li>
+    </ul>
+
+    <div class="sub-title">Monitoring</div>
+    <ul class="checklist">
+      <li><span class="checkbox"></span>Wir wissen, wenn ein Server oder Service ausfallt &mdash; nicht erst durch Kunden</li>
+      <li><span class="checkbox"></span>Wir haben ein Dashboard fur den Systemstatus (oder eine Monitoring-Losung)</li>
+    </ul>
+
+    <div class="score-field">
+      Mein Score Block 1: <div class="score-box"></div> / 8
+    </div>
+
+    <div class="tip">Ein Team-Chat mit API ist die Basis fur jeden KI-Agenten. Ohne API kein Polling, keine Webhooks, keine Automatisierung.</div>
+  </div>
+
+  <!-- BLOCK 2 -->
+  <div class="block">
+    <div class="block-header">
+      <div class="block-num">2</div>
+      <div class="block-title">Prozesse &amp; Workflows</div>
+      <div class="block-points">8 Punkte</div>
+    </div>
+
+    <div class="sub-title">Wiederkehrende Aufgaben</div>
+    <ul class="checklist">
+      <li><span class="checkbox"></span>Wir haben mindestens 3 Aufgaben, die wochentlich gleich ablaufen (Reporting, Checks, Updates)</li>
+      <li><span class="checkbox"></span>Status-Reports werden manuell erstellt &mdash; hier liegt Automatisierungs-Potenzial!</li>
+      <li><span class="checkbox"></span>Deployment- oder Release-Prozesse sind dokumentiert</li>
+    </ul>
+
+    <div class="sub-title">Kommunikation &amp; Koordination</div>
+    <ul class="checklist">
+      <li><span class="checkbox"></span>Meeting-Protokolle werden manuell geschrieben (Potenzial fur KI-Transkription)</li>
+      <li><span class="checkbox"></span>Code-Reviews oder Qualitats-Checks folgen einem festen Schema</li>
+      <li><span class="checkbox"></span>Neue Aufgaben werden manuell zugewiesen und nachverfolgt</li>
+    </ul>
+
+    <div class="sub-title">Daten &amp; Berichte</div>
+    <ul class="checklist">
+      <li><span class="checkbox"></span>Wir erstellen regelmasig Reports aus verschiedenen Datenquellen</li>
+      <li><span class="checkbox"></span>Alerts und Benachrichtigungen werden manuell weitergeleitet</li>
+    </ul>
+
+    <div class="score-field">
+      Mein Score Block 2: <div class="score-box"></div> / 8
+    </div>
+
+    <div class="tip">Jeder manuelle Report ist ein Quick Win fur KI-Automatisierung. Ein Agent der taglich um 9 Uhr den Status postet, spart sofort Aufwand.</div>
+  </div>
+
+  <!-- BLOCK 3 -->
+  <div class="block">
+    <div class="block-header">
+      <div class="block-num">3</div>
+      <div class="block-title">Team &amp; Kultur</div>
+      <div class="block-points">5 Punkte</div>
+    </div>
+
+    <ul class="checklist">
+      <li><span class="checkbox"></span>Das Team ist offen fur neue Tools und Experimente</li>
+      <li><span class="checkbox"></span>Es gibt eine Person, die KI-Projekte intern vorantreiben kann (KI-Champion)</li>
+      <li><span class="checkbox"></span>Wir haben Budget fur ein Pilotprojekt (ab &euro;500/Monat oder interne Entwicklungszeit)</li>
+      <li><span class="checkbox"></span>Datenschutz &amp; DSGVO sind uns bewusst &mdash; wir nehmen es ernst</li>
+      <li><span class="checkbox"></span>Wir sind bereit, einen Prozess zunachst etwas langsamer zu machen, um ihn dann zu automatisieren</li>
+    </ul>
+
+    <div class="score-field">
+      Mein Score Block 3: <div class="score-box"></div> / 5
+    </div>
+
+    <div class="tip">Der KI-Champion ist entscheidend. Ohne jemanden, der das Thema intern treibt, scheitern 80% aller KI-Projekte &mdash; egal wie gut die Technologie ist.</div>
+  </div>
+
+  <!-- BLOCK 4 -->
+  <div class="block">
+    <div class="block-header">
+      <div class="block-num">4</div>
+      <div class="block-title">Quick Wins &mdash; Sofort umsetzbar</div>
+      <div class="block-points">4 Punkte</div>
+    </div>
+
+    <p style="font-size:10pt; color:#6b7280; margin-bottom:12px;">Diese 4 Dinge konnen Sie <strong>diese Woche noch starten</strong> &mdash; ohne grosen Aufwand:</p>
+
+    <ul class="checklist">
+      <li><span class="checkbox"></span><strong>Status-Bot:</strong> Lassen Sie einen Agenten taglich um 9 Uhr einen Team-Status in Ihren Chat posten</li>
+      <li><span class="checkbox"></span><strong>Alert-Automatisierung:</strong> Serverprobleme automatisch ins Team-Chat &mdash; ohne manuelle Weiterleitung</li>
+      <li><span class="checkbox"></span><strong>Meeting-Zusammenfassung:</strong> Transkription + Action Items nach jedem Call automatisch generieren</li>
+      <li><span class="checkbox"></span><strong>Deployment-Checklist:</strong> Agent fuhrt Checks durch, bevor Live-Schaltung freigegeben wird</li>
+    </ul>
+
+    <div class="score-field">
+      Mein Score Block 4: <div class="score-box"></div> / 4
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- AUSWERTUNG PAGE -->
+<div class="content auswertung">
+  <div class="page-header">
+    <span class="brand">ai-engineering.at</span>
+    <span class="doc-title">Auswertung &amp; Empfehlungen</span>
+  </div>
+
+  <h2>Ihre Auswertung</h2>
+  <p class="sub">Addieren Sie Ihre Scores aus allen 4 Blocken (max. 25 Punkte).</p>
+
+  <div class="score-field" style="margin-bottom: 24px; font-size: 11pt; background: #f1f5f9; padding: 14px 18px; border-radius: 8px;">
+    <strong>Mein Total-Score:</strong> &nbsp;<div class="score-box" style="width:60px;"></div>&nbsp; / 25
+  </div>
+
+  <table class="score-table">
+    <thead>
+      <tr>
+        <th>Score</th>
+        <th>Bedeutung</th>
+        <th>Empfehlung</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge-gruen">20&ndash;25 Punkte ✓✓✓</span></td>
+        <td>KI-Ready! Sie konnen sofort loslegen.</td>
+        <td>Ersten Agenten in 2 Wochen deployen &rarr; <strong>AI Agent Team Blueprint</strong></td>
+      </tr>
+      <tr>
+        <td><span class="badge-gelb">13&ndash;19 Punkte ✓✓</span></td>
+        <td>Fast bereit. 2&ndash;3 Lucken schliesen.</td>
+        <td>Infrastruktur aufbauen &rarr; <strong>Lokaler AI-Stack Playbook</strong> (EUR 49)</td>
+      </tr>
+      <tr>
+        <td><span class="badge-orange">8&ndash;12 Punkte ✓</span></td>
+        <td>Grundlagen aufbauen. Guter Startpunkt.</td>
+        <td>Mit kostenlosem Einstieg beginnen &rarr; <strong>Docker + Ollama + n8n</strong></td>
+      </tr>
+      <tr>
+        <td><span class="badge-rot">0&ndash;7 Punkte ○</span></td>
+        <td>Noch fruh. Strategie zuerst.</td>
+        <td>30-Min-Beratungsgesprach empfohlen &rarr; <strong>hello@ai-engineering.at</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="bonus-box">
+    <h3>&#x26A1; Bonus: Die 5 haufigsten Fehler bei KI-Projekten</h3>
+    <ol>
+      <li><strong>Zu gros starten</strong> &mdash; Pilotprojekt mit einem Use Case, nicht mit funf gleichzeitig</li>
+      <li><strong>Kein Fallback</strong> &mdash; Jeder Agent braucht einen manuellen Fallback-Plan fur den Fehlerfall</li>
+      <li><strong>Team nicht einbinden</strong> &mdash; Agenten, die niemand nutzt oder versteht, scheitern immer</li>
+      <li><strong>Kein Monitoring</strong> &mdash; Wenn der Agent fehlerhaft arbeitet, muss das sofort auffallen</li>
+      <li><strong>DSGVO ignorieren</strong> &mdash; Klaren Sie vorher: Welche Daten darf der Agent verarbeiten?</li>
+    </ol>
+  </div>
+
+</div>
+
+<!-- CTA PAGE -->
+<div class="cta-page">
+  <h2>Was ist Ihr<br><span>nachster Schritt?</span></h2>
+  <p>Unabhangig von Ihrem Score: Wir zeigen Ihnen den direkten Weg zur ersten echten KI-Automatisierung in Ihrem Unternehmen.</p>
+
+  <div class="cta-options">
+    <div class="product-box">
+      <div class="product-title">&#x1F680; AI Agent Team Blueprint</div>
+      <ul class="product-features">
+        <li>Schritt-fur-Schritt: ersten Agenten deployen</li>
+        <li>Polling-Architektur &amp; Agent-Personas</li>
+        <li>n8n Workflow-Integration</li>
+        <li>Task-Board-Template (fertig einsetzbar)</li>
+        <li>Copy-paste ready Konfigurationen</li>
+      </ul>
+      <div class="price-tag"><span class="eur">EUR </span>19</div>
+      <a href="https://ai-engineering.at/products" class="buy-btn">Jetzt kaufen &rarr;</a>
+    </div>
+
+    <div class="product-box">
+      <div class="product-title">&#x1F4DA; Lokaler AI-Stack Playbook</div>
+      <ul class="product-features">
+        <li>70+ Seiten: von Null zum produktiven Stack</li>
+        <li>Docker Swarm Multi-Node Setup</li>
+        <li>Ollama, Open WebUI, Grafana, n8n</li>
+        <li>DSGVO Art. 30 Template inklusive</li>
+        <li>Alle Configs &amp; Scripts &mdash; copy-paste</li>
+      </ul>
+      <div class="price-tag"><span class="eur">EUR </span>49</div>
+      <a href="https://ai-engineering.at/products" class="buy-btn">Jetzt kaufen &rarr;</a>
+    </div>
+  </div>
+
+  <div class="cta-contact">
+    Kostenloser 30-Min-Check: <a href="mailto:hello@ai-engineering.at">hello@ai-engineering.at</a>
+  </div>
+
+  <div class="cta-footer">
+    &copy; 2026 AI Engineering Austria &middot; ai-engineering.at<br>
+    Dieses Dokument ist kostenlos und darf geteilt werden.
+  </div>
+</div>
+
+</body>
+</html>
