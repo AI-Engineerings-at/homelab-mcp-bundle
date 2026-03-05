@@ -28,7 +28,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 BASE         = Path("/home/joe/cli_bridge")
-OUTPUT_DIR   = BASE / "products/cover-templates"
+OUTPUT_DIR   = BASE / "products/covers"
 EAGLE_PATH   = Path("/home/joe/Playbook01/landing-page/public/eagle-logo-inverted.png")
 
 # Product screenshots (real screenshots for visual products, None = styled mockup)
@@ -39,6 +39,7 @@ SCREENSHOTS = {
     "dsgvo-art30-bundle":     None,
     "homelab-mcp-bundle":     None,
     "ai-agent-blueprint":     None,
+    "komplett-bundle":        None,
 }
 
 PRODUCTS = [
@@ -95,6 +96,14 @@ PRODUCTS = [
      "features": ["Multi-Agent", "Architecture", "n8n + Claude", "Templates"],
      "stats": [("10+", "Agents"), ("7", "Blueprints"), ("1-Click", "Deploy")],
      "price": "EUR 19", "icon": "🤖"},
+    {"id": "komplett-bundle",
+     "accent": "#F59E0B", "accent_dark": "#D97706",
+     "gradient": "linear-gradient(175deg,#0d0800 0%,#1a1000 55%,#0d0800 100%)",
+     "badge": "Best Value · Spar 50%+", "eyebrow": "AI Engineering Komplett-Paket",
+     "title": "AI Engineering <em>Komplett</em> Bundle",
+     "features": ["Playbook + n8n", "Grafana + DSGVO", "MCP + Blueprint", "Alles drin"],
+     "stats": [("6", "Produkte"), ("EUR 190+", "Einzelwert"), ("50%+", "Ersparnis")],
+     "price": "EUR 149", "icon": "🎯"},
 ]
 
 

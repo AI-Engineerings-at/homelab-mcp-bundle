@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:800px;height:800px;overflow:hidden}
+.cover{
+  width:800px;height:800px;background:#020F0A;
+  position:relative;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:44px 60px;font-family:'Inter',sans-serif;overflow:hidden
+}
+.grid{position:absolute;inset:0;
+  background-image:linear-gradient(#10B98109 1px,transparent 1px),linear-gradient(90deg,#10B98109 1px,transparent 1px);
+  background-size:56px 56px;z-index:0}
+.glow{position:absolute;width:480px;height:480px;
+  background:radial-gradient(circle,#10B9811A 0%,transparent 68%);
+  top:50%;left:50%;transform:translate(-50%,-50%);z-index:0}
+.c1{position:absolute;top:0;left:0;width:180px;height:180px;
+  border-right:1px solid #10B9811E;border-bottom:1px solid #10B9811E;
+  border-bottom-right-radius:180px;z-index:1}
+.c2{position:absolute;bottom:0;right:0;width:160px;height:160px;
+  border-left:1px solid #10B9811E;border-top:1px solid #10B9811E;
+  border-top-left-radius:160px;z-index:1}
+.bar{position:absolute;left:0;top:18%;bottom:18%;
+  width:3px;background:linear-gradient(to bottom,transparent,#10B981CC,transparent);z-index:1}
+.content{position:relative;z-index:10;display:flex;flex-direction:column;
+  align-items:center;text-align:center;width:100%;gap:0}
+.cat{font-size:9.5px;font-weight:600;letter-spacing:2.5px;color:#10B981;
+  background:#10B98114;border:1px solid #10B98144;padding:5px 14px;
+  border-radius:20px;margin-bottom:22px}
+.title{font-family:'Space Grotesk',sans-serif;font-size:60px;font-weight:800;
+  line-height:1.1;color:#F1F5F9;letter-spacing:-1.5px;margin-bottom:0px}
+.title em{color:#10B981;font-style:normal}
+.hero{width:100%;margin:20px 0;display:flex;justify-content:center;align-items:center}
+.hero svg{width:340px;height:auto;
+  filter:drop-shadow(0 8px 32px #10B98135)}
+.sub{font-size:14px;font-weight:400;color:#94A3B8;line-height:1.5;
+  max-width:480px;margin-bottom:20px}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:22px}
+.pill{font-size:11.5px;font-weight:500;color:#CBD5E1;
+  background:#1E293B;border:1px solid #334155;padding:5px 14px;border-radius:20px}
+.ppaid{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;
+  padding:8px 26px;border-radius:30px;color:#020F0A;background:#10B981}
+.pfree{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;
+  padding:8px 26px;border-radius:30px;color:#10B981;
+  background:#10B9811E;border:1.5px solid #10B981}
+</style></head>
+<body>
+<div class="cover">
+  <div class="grid"></div>
+  <div class="glow"></div>
+  <div class="c1"></div>
+  <div class="c2"></div>
+  <div class="bar"></div>
+  <div class="content">
+    <span class="cat">COMPLETE GUIDE</span>
+    <h1 class="title">Local AI Stack<br>Playbook</h1>
+    <div class="hero"><svg viewBox="0 0 340 210" xmlns="http://www.w3.org/2000/svg">
+  <rect width="340" height="210" rx="12" fill="#0F172A" stroke="#10B981" stroke-width="1" opacity="0.6"/>
+  <rect x="16" y="16" width="60" height="8" rx="4" fill="#10B981" opacity="0.8"/>
+  <rect x="16" y="36" width="100" height="6" rx="3" fill="#334155"/>
+  <rect x="16" y="52" width="80" height="6" rx="3" fill="#334155"/>
+  <rect x="16" y="68" width="120" height="6" rx="3" fill="#334155"/>
+  <rect x="16" y="84" width="70" height="6" rx="3" fill="#334155"/>
+  <circle cx="280" cy="105" r="45" fill="#10B981" opacity="0.07"/>
+</svg></div>
+    <p class="sub">Run Ollama, n8n & Docker on your own hardware — fully private.</p>
+    <div class="pills"><span class="pill">Ollama GPU</span><span class="pill">n8n Automation</span><span class="pill">Docker Swarm</span></div>
+    <span class="ppaid">EUR 49</span>
+  </div>
+</div>
+</body></html>
