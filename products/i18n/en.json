@@ -30,7 +30,13 @@
         "short_desc": "Complete blueprint: 4 Claude agents + Mattermost hub. Templates, code, security rules from a production system. Ready to use.",
         "price": "EUR 19",
         "cta": "Get it on Gumroad",
-        "tags": ["claude", "multi-agent", "mattermost", "n8n", "blueprint"]
+        "tags": [
+          "claude",
+          "multi-agent",
+          "mattermost",
+          "n8n",
+          "blueprint"
+        ]
       },
       "n8n_bundle": {
         "title": "n8n Starter Bundle",
@@ -38,7 +44,13 @@
         "short_desc": "3 battle-tested n8n workflows: Stripe delivery, local AI (Ollama), GDPR Art.30 register. GDPR-safe, self-hosted, ready to import.",
         "price": "EUR 29",
         "cta": "Get it on Gumroad",
-        "tags": ["n8n", "automation", "gdpr", "ollama", "stripe"]
+        "tags": [
+          "n8n",
+          "automation",
+          "gdpr",
+          "ollama",
+          "stripe"
+        ]
       },
       "grafana_pack": {
         "title": "Grafana Dashboard Pack",
@@ -46,7 +58,13 @@
         "short_desc": "6 Grafana dashboards: Infrastructure, Docker Swarm, Node Exporter, Network, Services, Alerts. Import & done. Prometheus-ready.",
         "price": "EUR 39",
         "cta": "Get it on Gumroad",
-        "tags": ["grafana", "prometheus", "monitoring", "homelab", "docker"]
+        "tags": [
+          "grafana",
+          "prometheus",
+          "monitoring",
+          "homelab",
+          "docker"
+        ]
       },
       "gdpr_bundle": {
         "title": "GDPR Art.30 Compliance Bundle",
@@ -54,7 +72,13 @@
         "short_desc": "GDPR Art.30 compliant processing register as n8n workflow. Validates all mandatory fields. Self-hosted, no cloud dependency.",
         "price": "EUR 79",
         "cta": "Get it on Gumroad",
-        "tags": ["gdpr", "compliance", "n8n", "self-hosted", "eu"]
+        "tags": [
+          "gdpr",
+          "compliance",
+          "n8n",
+          "self-hosted",
+          "eu"
+        ]
       },
       "playbook": {
         "title": "Playbook01: The Local AI Stack",
@@ -62,7 +86,13 @@
         "short_desc": "Complete guide to building your own local AI stack. Proxmox + Docker Swarm + n8n + Ollama. No cloud needed.",
         "price": "EUR 49",
         "cta": "Get the Playbook",
-        "tags": ["homelab", "proxmox", "docker", "ollama", "self-hosted"]
+        "tags": [
+          "homelab",
+          "proxmox",
+          "docker",
+          "ollama",
+          "self-hosted"
+        ]
       },
       "mcp_bundle": {
         "title": "Homelab MCP Bundle",
@@ -70,7 +100,28 @@
         "short_desc": "8 open-source MCP servers, 51 tools. Connect Claude to your entire homelab stack. MIT licensed.",
         "price": "FREE",
         "cta": "View on GitHub",
-        "tags": ["mcp", "open-source", "homelab", "claude", "free"]
+        "tags": [
+          "mcp",
+          "open-source",
+          "homelab",
+          "claude",
+          "free"
+        ]
+      },
+      "komplett_bundle": {
+        "title": "AI Engineering Komplett-Bundle",
+        "subtitle": "All 6 products in one bundle — save 60% vs. individual purchase.",
+        "short_desc": "Complete AI stack toolkit: agents, n8n workflows, Grafana dashboards, GDPR compliance, local AI playbook + 8 MCP servers. Best value.",
+        "price": "EUR 79",
+        "cta": "Get the Bundle",
+        "tags": [
+          "bundle",
+          "ai engineering",
+          "homelab",
+          "n8n",
+          "mcp",
+          "value"
+        ]
       }
     }
   },

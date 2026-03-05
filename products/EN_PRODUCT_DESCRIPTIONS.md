@@ -349,3 +349,42 @@ Product Cards (EN):
 ---
 
 *@lisa01 | AI-Engineering.at | 2026-02-25*
+
+---
+
+## Product 7 — AI Engineering Komplett-Bundle
+
+**Price: EUR 79** | `gumroad.com/l/mdpcf`
+
+### Gumroad Title
+AI Engineering Komplett-Bundle — Alle Produkte zum Vorteilspreis
+
+### Gumroad Description (EN)
+**All 6 products in one bundle — save 60% vs. individual purchase**
+
+Instead of EUR 203 (sum of individual prices), pay only EUR 79 and get everything:
+
+✅ AI Agent Team Blueprint (EUR 19)
+✅ n8n Starter Bundle (EUR 29)
+✅ Grafana Dashboard Pack (EUR 39)
+✅ GDPR Art. 30 Bundle (EUR 79)
+✅ Playbook01: The Local AI Stack (EUR 49)
+✅ Homelab MCP Bundle (FREE)
+
+**For whom:**
+For everyone who wants to build a complete, GDPR-compliant AI stack — without piecemeal purchasing.
+
+**What you get:**
+→ Blueprint for your AI agent team
+→ 3 production-ready n8n workflows
+→ 6 Grafana dashboards for your homelab
+→ GDPR-compliant processing register (automated)
+→ Complete guide to your local AI stack
+→ 8 MCP servers for Claude integration (51 tools)
+
+**One-time payment — no subscription, no cloud.**
+
+### Tags
+```
+ai engineering, bundle, homelab, self-hosted, n8n, claude, mcp, gdpr, grafana, value
+```
