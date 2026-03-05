@@ -1,0 +1,25 @@
+{
+  "name": "AI Engineering",
+  "accent": "#4263FF",
+  "accent_dark": "#2945CC",
+  "accent_secondary": "#9A25EA",
+  "bg": "#0A0B14",
+  "bg_secondary": "#12121F",
+  "domain": "ai-engineering.at",
+  "logo": "/home/joe/Playbook01/landing-page/public/eagle-logo-inverted.png",
+  "fonts": {
+    "heading": "Montserrat",
+    "body": "Inter"
+  },
+  "colors": {
+    "products": {
+      "localai-playbook":      {"accent": "#10B981", "accent_dark": "#059669"},
+      "n8n-starter-bundle":    {"accent": "#FB923C", "accent_dark": "#EA580C"},
+      "grafana-dashboard-pack":{"accent": "#60A5FA", "accent_dark": "#2563EB"},
+      "dsgvo-art30-bundle":    {"accent": "#C084FC", "accent_dark": "#9333EA"},
+      "homelab-mcp-bundle":    {"accent": "#22D3EE", "accent_dark": "#0891B2"},
+      "ai-agent-blueprint":    {"accent": "#4ADE80", "accent_dark": "#16A34A"},
+      "mcp-cheat-sheet":       {"accent": "#22D3EE", "accent_dark": "#0891B2"}
+    }
+  }
+}
