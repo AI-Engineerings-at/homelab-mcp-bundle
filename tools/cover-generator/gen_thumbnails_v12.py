@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-Thumbnail Generator v12 -- Product Image Showcase Design
+Thumbnail Generator v12 -- LEFT/RIGHT Split Design
 
-800x800 thumbnails used as product-image-cards inside Gumroad covers.
+800x800 thumbnails for Gumroad product covers.
 Layout:
-  [top 42%]   Product screenshot (real or styled mockup)
-  [~38% ctr]  Eagle watermark -- Schriftzug visible in transition zone (~60%)
-  [42%-100%]  Product title, features, stats, price
+  [LEFT  360px]  Content column: badge, eyebrow, title, features, stats, price, brand
+  [RIGHT 440px]  Product image/mockup -- fills ENTIRE right column (full 800px height)
 
-Eagle at top:38% (center) -- Schriftzug (logo text) lands at ~60% -- visible
-between product image area (0-42%) and the lower content section (65%+).
+Eagle watermark sits in the left column, centered vertically.
+Gradient blend on left edge of right column fades from background into product image.
 
 v12 changes vs prev:
-  - Eagle moved from 52% -> 38% (center point)
-  - Product image slot added (real screenshot or styled mockup)
-  - Separator line between image and content
+  - LAYOUT CHANGED: top/bottom -> left/right split
+  - Product image now fills entire right 440x800px (was top 336px)
+  - Products much more visible and impactful
+  - Left column: all text content + brand strip at bottom
 
 Usage:
   python3 gen_thumbnails_v12.py                  # all products
@@ -96,6 +96,7 @@ PRODUCTS = [
      "features": ["Multi-Agent", "Architecture", "n8n + Claude", "Templates"],
      "stats": [("10+", "Agents"), ("7", "Blueprints"), ("1-Click", "Deploy")],
      "price": "EUR 19", "icon": "🤖"},
+
     {"id": "komplett-bundle",
      "accent": "#F59E0B", "accent_dark": "#D97706",
      "gradient": "linear-gradient(175deg,#0d0800 0%,#1a1000 55%,#0d0800 100%)",
@@ -117,24 +118,26 @@ def load_b64(path):
     return ""
 
 
-def build_mockup(p):
-    """CSS-only styled mockup for products without a real screenshot."""
+def build_mockup_right(p):
+    """Full-height CSS mockup for the right column (440x800px)."""
     a = p["accent"]
-    feature_pills = "".join(
-        f'<div style="background:rgba(255,255,255,.05);border:1px solid {a}33;'
-        f'border-radius:6px;padding:7px 13px;color:rgba(248,250,252,.72);'
-        f'font-size:12px;font-weight:500;display:inline-block;margin:3px">{f}</div>'
+    feature_items = "".join(
+        f'<div style="display:flex;align-items:center;gap:10px;padding:9px 18px;'
+        f'background:rgba(255,255,255,.04);border:1px solid {a}30;border-radius:10px;'
+        f'color:rgba(248,250,252,.80);font-size:13px;font-weight:500;width:100%">'
+        f'<span style="color:{a};font-size:16px">▸</span>{f}</div>'
         for f in p["features"]
     )
     return (
         f'<div style="width:100%;height:100%;display:flex;flex-direction:column;'
-        f'align-items:center;justify-content:center;gap:14px;padding:28px 24px;'
-        f'background:radial-gradient(ellipse at 50% 40%,{a}18 0%,transparent 65%)">'
-        f'<div style="font-size:74px;line-height:1;filter:drop-shadow(0 0 24px {a}80)">{p["icon"]}</div>'
-        f'<div style="color:{a};font-size:11px;font-weight:700;letter-spacing:.18em;'
-        f'text-transform:uppercase">{p["eyebrow"]}</div>'
-        f'<div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;max-width:340px">'
-        f'{feature_pills}</div></div>'
+        f'align-items:center;justify-content:center;gap:20px;padding:40px 30px;'
+        f'background:radial-gradient(ellipse at 50% 38%,{a}1e 0%,transparent 62%)">'
+        f'<div style="font-size:110px;line-height:1;filter:drop-shadow(0 0 40px {a}90);'
+        f'margin-bottom:8px">{p["icon"]}</div>'
+        f'<div style="color:{a};font-size:12px;font-weight:700;letter-spacing:.20em;'
+        f'text-transform:uppercase;text-align:center;opacity:.85">{p["eyebrow"]}</div>'
+        f'<div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px">'
+        f'{feature_items}</div></div>'
     )
 
 
@@ -144,126 +147,114 @@ def build_thumbnail(p):
     shot_b64 = load_b64(shot_key) if shot_key else ""
     a, d     = p["accent"], p["accent_dark"]
 
-    # Determine background color for gradient overlay (extract first stop from gradient)
-    bg_dark = p["gradient"].split(",")[1].strip().split(" ")[0]
+    # Extract background base color for gradient blend
+    bg_base = p["gradient"].split(",")[1].strip().split(" ")[0]
 
-    # Product image section (top 42% = 336px of 800px)
+    # ── RIGHT COLUMN: product image or mockup (fills entire 440x800) ──
     if shot_b64:
-        # Real screenshot with gradient blend-out overlay
-        product_section = (
-            f'<div style="position:relative;width:100%;height:336px;overflow:hidden;flex-shrink:0;z-index:5">'
+        right_col = (
+            f'<div class="right-col">'
             f'<img src="{shot_b64}" style="width:100%;height:100%;object-fit:cover;'
-            f'object-position:top left;display:block;filter:brightness(.86) saturate(1.18)">'
-            f'<div style="position:absolute;inset:0;background:linear-gradient(to bottom,'
-            f'transparent 0%,transparent 45%,{bg_dark}ee 100%)"></div>'
-            f'<div style="position:absolute;top:15px;left:15px;background:{a}22;border:1px solid {a}60;'
-            f'border-radius:100px;padding:5px 14px;color:{a};font-size:10px;font-weight:700;'
-            f'letter-spacing:.12em;text-transform:uppercase">{p["badge"]}</div>'
+            f'object-position:top left;display:block;filter:brightness(.88) saturate(1.15)">'
+            f'<div class="right-blend" style="background:linear-gradient(to right,{bg_base}dd 0%,{bg_base}66 18%,transparent 38%)"></div>'
             f'</div>'
         )
     else:
-        product_section = (
-            f'<div style="position:relative;width:100%;height:336px;overflow:hidden;flex-shrink:0;'
-            f'background:{p["gradient"]};z-index:5">'
-            f'{build_mockup(p)}'
-            f'<div style="position:absolute;top:15px;left:15px;background:{a}22;border:1px solid {a}60;'
-            f'border-radius:100px;padding:5px 14px;color:{a};font-size:10px;font-weight:700;'
-            f'letter-spacing:.12em;text-transform:uppercase">{p["badge"]}</div>'
+        right_col = (
+            f'<div class="right-col" style="background:{p["gradient"]}">'
+            f'{build_mockup_right(p)}'
+            f'<div class="right-blend" style="background:linear-gradient(to right,{bg_base}ee 0%,{bg_base}88 22%,transparent 45%)"></div>'
             f'</div>'
         )
 
-    # Feature pills
-    feats = "".join(
-        f'<div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);'
-        f'border-radius:6px;padding:5px 10px;color:rgba(248,250,252,.75);font-size:11px;'
-        f'font-weight:500">{f}</div>'
-        for f in p["features"]
-    )
-    # Stats
-    stats = "".join(
-        f'<div style="text-align:left">'
-        f'<div style="font-size:20px;font-weight:700;color:{a};line-height:1">{n}</div>'
-        f'<div style="font-size:9px;color:rgba(255,255,255,.28);text-transform:uppercase;'
-        f'letter-spacing:.07em;margin-top:2px">{l}</div></div>'
-        for n, l in p["stats"]
-    )
-
-    # Eagle watermark: center at top:38% -> Schriftzug visible between product and content
+    # ── EAGLE watermark (left column, centered) ──
     eagle_html = (
-        f'<div style="position:absolute;width:580px;height:580px;'
-        f'top:38%;left:50%;transform:translate(-50%,-50%);opacity:0.22;z-index:4;'
+        f'<div style="position:absolute;width:310px;height:310px;'
+        f'top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.11;z-index:4;'
         f'pointer-events:none">'
         f'<img src="{eagle}" style="width:100%;height:100%;object-fit:contain" alt=""></div>'
     ) if eagle else ""
 
-    # Brand logo for footer
+    # ── Brand logo ──
     brand_logo_html = (
-        f'<img src="{eagle}" style="width:20px;height:20px;object-fit:contain;'
-        f'opacity:.45;filter:brightness(0) invert(1)" alt="">'
+        f'<img src="{eagle}" style="width:18px;height:18px;object-fit:contain;'
+        f'opacity:.38;filter:brightness(0) invert(1)" alt="">'
     ) if eagle else ""
+
+    # ── Feature pills ──
+    feats = "".join(
+        f'<div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);'
+        f'border-radius:7px;padding:6px 11px;color:rgba(248,250,252,.78);font-size:11.5px;'
+        f'font-weight:500">{f}</div>'
+        for f in p["features"]
+    )
+
+    # ── Stats ──
+    stats = "".join(
+        f'<div style="text-align:left">'
+        f'<div style="font-size:21px;font-weight:700;color:{a};line-height:1">{n}</div>'
+        f'<div style="font-size:9px;color:rgba(255,255,255,.30);text-transform:uppercase;'
+        f'letter-spacing:.07em;margin-top:2px">{l}</div></div>'
+        for n, l in p["stats"]
+    )
 
     return f"""<!DOCTYPE html><html><head><meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *{{margin:0;padding:0;box-sizing:border-box}}
 body{{width:800px;height:800px;overflow:hidden;font-family:'Inter',sans-serif;color:#F8FAFC}}
-.wrap{{width:800px;height:800px;background:{p['gradient']};position:relative;overflow:hidden;
-  display:flex;flex-direction:column}}
-.wrap::before{{content:'';position:absolute;inset:0;
-  background-image:linear-gradient({a}07 1px,transparent 1px),
-  linear-gradient(90deg,{a}07 1px,transparent 1px);
-  background-size:46px 46px;z-index:3}}
-.orb1{{position:absolute;width:500px;height:500px;
-  background:radial-gradient(circle,{a}14 0%,transparent 65%);
-  top:-110px;right:-70px;z-index:2}}
-.orb2{{position:absolute;width:360px;height:360px;
-  background:radial-gradient(circle,{a}0a 0%,transparent 65%);
-  bottom:-80px;left:30px;z-index:2}}
-.lline{{position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:linear-gradient(to bottom,transparent,{a},{a},transparent);z-index:6}}
-.sep{{height:1px;background:linear-gradient(to right,{a}50,{a}20,transparent);
-  position:relative;z-index:6;flex-shrink:0}}
-.content{{position:relative;z-index:10;flex:1;display:flex;flex-direction:column;
-  padding:16px 28px 12px 30px;min-height:0}}
-.eyebrow{{color:{a};font-size:10px;font-weight:700;letter-spacing:.18em;
-  text-transform:uppercase;margin-bottom:7px}}
-.title{{font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:800;
-  line-height:1.05;letter-spacing:-.02em;color:#F8FAFC;margin-bottom:10px}}
+.wrap{{width:800px;height:800px;background:{p['gradient']};position:relative;overflow:hidden;display:flex;flex-direction:row}}
+.wrap::before{{content:'';position:absolute;left:0;top:0;width:360px;height:800px;
+  background-image:linear-gradient({a}07 1px,transparent 1px),linear-gradient(90deg,{a}07 1px,transparent 1px);
+  background-size:46px 46px;z-index:3;pointer-events:none}}
+.orb1{{position:absolute;width:420px;height:420px;background:radial-gradient(circle,{a}12 0%,transparent 65%);top:-80px;left:-60px;z-index:2}}
+.orb2{{position:absolute;width:300px;height:300px;background:radial-gradient(circle,{a}0a 0%,transparent 65%);bottom:-60px;left:20px;z-index:2}}
+.lline{{position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,transparent,{a},{a},transparent);z-index:10}}
+.col-sep{{position:absolute;left:360px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,{a}40,{a}40,transparent);z-index:7}}
+.left-col{{width:360px;flex-shrink:0;height:800px;position:relative;z-index:5;display:flex;flex-direction:column}}
+.right-col{{flex:1;height:800px;position:relative;overflow:hidden;z-index:5}}
+.right-blend{{position:absolute;inset:0;pointer-events:none;z-index:6}}
+.top{{padding:32px 22px 0 30px;position:relative;z-index:10}}
+.badge{{display:inline-block;background:{a}22;border:1px solid {a}60;border-radius:100px;padding:5px 13px;color:{a};font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}}
+.eyebrow{{color:{a};font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px;opacity:.85}}
+.title{{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:800;line-height:1.08;letter-spacing:-.02em;color:#F8FAFC}}
 .title em{{color:{a};font-style:normal}}
-.feats{{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:auto}}
-.div{{height:1px;background:linear-gradient(to right,{a}45,transparent);margin:10px 0}}
-.bot{{display:flex;align-items:center;justify-content:space-between}}
-.stats{{display:flex;gap:16px}}
-.price{{background:linear-gradient(135deg,{a},{d});border-radius:10px;
-  padding:9px 18px;font-size:22px;font-weight:800;color:#fff}}
-.brand{{display:flex;align-items:center;gap:7px;padding:7px 30px 9px;
-  border-top:1px solid rgba(255,255,255,.06);position:relative;z-index:10;flex-shrink:0}}
-.brand-name{{font-size:9px;font-weight:700;color:rgba(255,255,255,.28);
-  letter-spacing:.12em;text-transform:uppercase}}
-.brand-url{{font-size:8px;color:rgba(255,255,255,.16);letter-spacing:.12em;
-  text-transform:uppercase;margin-left:auto}}
+.mid{{padding:18px 22px 0 30px;position:relative;z-index:10;flex:1}}
+.feats{{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}}
+.div{{height:1px;background:linear-gradient(to right,{a}45,transparent);margin:12px 0}}
+.bot{{padding:0 22px 0 30px;position:relative;z-index:10}}
+.stats{{display:flex;gap:16px;margin-bottom:14px}}
+.price{{display:inline-block;background:linear-gradient(135deg,{a},{d});border-radius:12px;padding:10px 20px;font-size:26px;font-weight:800;color:#fff;letter-spacing:-.01em}}
+.brand{{display:flex;align-items:center;gap:7px;padding:10px 22px 12px 30px;border-top:1px solid rgba(255,255,255,.07);position:relative;z-index:10;flex-shrink:0;margin-top:14px}}
+.brand-name{{font-size:9px;font-weight:700;color:rgba(255,255,255,.28);letter-spacing:.12em;text-transform:uppercase}}
+.brand-url{{font-size:8px;color:rgba(255,255,255,.16);letter-spacing:.12em;text-transform:uppercase;margin-left:auto}}
 </style></head><body>
 <div class="wrap">
   <div class="orb1"></div><div class="orb2"></div>
-  {eagle_html}
   <div class="lline"></div>
-  {product_section}
-  <div class="sep"></div>
-  <div class="content">
-    <div class="eyebrow">{p['eyebrow']}</div>
-    <div class="title">{p['title']}</div>
-    <div class="feats">{feats}</div>
-    <div class="div"></div>
+  <div class="col-sep"></div>
+  <div class="left-col">
+    {eagle_html}
+    <div class="top">
+      <div class="badge">{p['badge']}</div>
+      <div class="eyebrow">{p['eyebrow']}</div>
+      <div class="title">{p['title']}</div>
+    </div>
+    <div class="mid">
+      <div class="feats">{feats}</div>
+      <div class="div"></div>
+    </div>
     <div class="bot">
       <div class="stats">{stats}</div>
       <div class="price">{p['price']}</div>
     </div>
+    <div class="brand">
+      {brand_logo_html}
+      <div class="brand-name">AI Engineering</div>
+      <div class="brand-url">ai-engineering.at</div>
+    </div>
   </div>
-  <div class="brand">
-    {brand_logo_html}
-    <div class="brand-name">AI Engineering</div>
-    <div class="brand-url">ai-engineering.at</div>
-  </div>
+  {right_col}
 </div>
 </body></html>"""
 
@@ -296,7 +287,7 @@ def render(p, out_dir, dry_run=False):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Thumbnail Generator v12 -- Eagle@38%, Produktbild oben, 800x800"
+        description="Thumbnail Generator v12 -- Left/Right Split, Product fills right 440px, 800x800"
     )
     parser.add_argument("products", nargs="*", help="Product IDs (default: all)")
     parser.add_argument("--out", default=str(OUTPUT_DIR))
@@ -320,7 +311,7 @@ def main():
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
-    print(f"\nThumbnail Generator v12  --  {len(products)} Produkt(e)  [Eagle@38%, 800x800]\n")
+    print(f"\nThumbnail Generator v12  --  {len(products)} Produkt(e)  [Left/Right Split, Product@440px, 800x800]\n")
     ok = 0
     for p in products:
         try:
