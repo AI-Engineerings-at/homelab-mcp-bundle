@@ -1,0 +1,122 @@
+{
+  "nav": {
+    "products": "Produkte",
+    "about": "Über uns",
+    "blog": "Blog",
+    "github": "GitHub",
+    "contact": "Kontakt",
+    "cta": "Jetzt starten"
+  },
+  "hero": {
+    "badge": "Self-hosted KI-Infrastruktur",
+    "headline": "Baue deinen eigenen KI-Stack — vollständig selbst gehostet",
+    "subheadline": "Produktionsreife Guides, Workflows & Tools für Homelab-Betreiber und datenschutzbewusste Teams.",
+    "cta_primary": "Produkte ansehen",
+    "cta_secondary": "Auf GitHub ansehen",
+    "trust_badges": {
+      "gdpr": "DSGVO-konform by Design",
+      "self_hosted": "100% selbst gehostet",
+      "open_source": "Open Source"
+    }
+  },
+  "products": {
+    "section_title": "Produkte",
+    "section_subtitle": "Battle-tested Tools aus einem Live-Produktionssystem",
+    "free_badge": "KOSTENLOS",
+    "items": {
+      "ai_blueprint": {
+        "title": "AI Agent Team Blueprint",
+        "subtitle": "Echte Architektur aus einem Produktionssystem. 4 Claude Agents, Mattermost als Hub, n8n für Automation.",
+        "short_desc": "Kompletter Blueprint: 4 Claude Agents + Mattermost Hub. Templates, Code, Sicherheitsregeln aus dem Produktionsbetrieb. Sofort einsatzbereit.",
+        "price": "EUR 19",
+        "cta": "Auf Gumroad kaufen",
+        "tags": ["claude", "multi-agent", "mattermost", "n8n", "blueprint"]
+      },
+      "n8n_bundle": {
+        "title": "n8n Starter Bundle",
+        "subtitle": "KI-Automation für europäische Unternehmen — ohne OpenAI-Abhängigkeit, vollständig selbst gehostet.",
+        "short_desc": "3 battle-tested n8n Workflows: Stripe-Delivery, lokale KI (Ollama), DSGVO Art.30 Register. DSGVO-sicher, self-hosted, sofort importierbar.",
+        "price": "EUR 29",
+        "cta": "Auf Gumroad kaufen",
+        "tags": ["n8n", "automation", "dsgvo", "ollama", "stripe"]
+      },
+      "grafana_pack": {
+        "title": "Grafana Dashboard Pack",
+        "subtitle": "Battle-tested Monitoring Dashboards für Homelab & DevOps — Docker Swarm, Prometheus, Node Exporter.",
+        "short_desc": "6 Grafana Dashboards: Infrastruktur, Docker Swarm, Node Exporter, Netzwerk, Services, Alerts. Importieren & fertig. Prometheus-ready.",
+        "price": "EUR 39",
+        "cta": "Auf Gumroad kaufen",
+        "tags": ["grafana", "prometheus", "monitoring", "homelab", "docker"]
+      },
+      "gdpr_bundle": {
+        "title": "DSGVO Art.30 Compliance Bundle",
+        "subtitle": "n8n Workflow mit REST API — einmal einrichten, Verarbeitungsaktivitäten korrekt dokumentieren.",
+        "short_desc": "DSGVO Art.30-konformes Verzeichnis als n8n Workflow. Validiert alle Pflichtfelder. Self-hosted, keine Cloud-Abhängigkeit.",
+        "price": "EUR 79",
+        "cta": "Auf Gumroad kaufen",
+        "tags": ["dsgvo", "compliance", "n8n", "self-hosted", "eu"]
+      },
+      "playbook": {
+        "title": "Playbook01: Der lokale KI-Stack",
+        "subtitle": "Baue eine produktionsreife, vollständig selbst gehostete KI-Infrastruktur — Proxmox, Docker Swarm, n8n, Ollama, Mattermost und mehr.",
+        "short_desc": "Kompletter Guide zum Aufbau deines eigenen lokalen KI-Stacks. Proxmox + Docker Swarm + n8n + Ollama. Keine Cloud nötig.",
+        "price": "EUR 49",
+        "cta": "Playbook holen",
+        "tags": ["homelab", "proxmox", "docker", "ollama", "self-hosted"]
+      },
+      "mcp_bundle": {
+        "title": "Homelab MCP Bundle",
+        "subtitle": "Gib Claude (oder einer anderen KI) vollen Zugriff auf dein Homelab — Proxmox, n8n, Mattermost, Uptime Kuma, Ollama, Grafana, Portainer, AdGuard.",
+        "short_desc": "8 Open-Source MCP Server, 51 Tools. Verbinde Claude mit deinem gesamten Homelab-Stack. MIT-lizenziert.",
+        "price": "KOSTENLOS",
+        "cta": "Auf GitHub ansehen",
+        "tags": ["mcp", "open-source", "homelab", "claude", "kostenlos"]
+      }
+    }
+  },
+  "about": {
+    "section_title": "Über uns",
+    "headline": "Von Entwicklern, für Entwickler",
+    "body": "AI-Engineering.at entwickelt produktionsreife Tools und Guides für selbst gehostete KI-Infrastruktur. Alles, was wir verkaufen, betreiben wir selbst — in einem Live-Homelab mit echten Workloads.",
+    "values": {
+      "self_hosted": {
+        "title": "Self-hosted first",
+        "desc": "Kein Vendor Lock-in. Deine Daten bleiben auf deinen Servern."
+      },
+      "gdpr": {
+        "title": "DSGVO by Design",
+        "desc": "Gebaut für europäische Teams. Keine US-Cloud-Abhängigkeiten."
+      },
+      "production": {
+        "title": "Produktionsgetestet",
+        "desc": "Alles läuft in unserer eigenen Produktionsumgebung, bevor wir es veröffentlichen."
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Self-hosted KI-Infrastruktur — für die echte Welt gebaut.",
+    "links": {
+      "imprint": "Impressum",
+      "privacy": "Datenschutz",
+      "github": "GitHub",
+      "gumroad": "Gumroad Shop"
+    },
+    "copyright": "© 2026 AI-Engineering.at — Alle Rechte vorbehalten."
+  },
+  "common": {
+    "learn_more": "Mehr erfahren",
+    "view_all": "Alle Produkte ansehen",
+    "back": "Zurück",
+    "close": "Schließen",
+    "open_source": "Open Source",
+    "self_hosted": "Self-hosted",
+    "gdpr_compliant": "DSGVO-konform",
+    "production_ready": "Produktionsreif",
+    "free": "Kostenlos",
+    "per_once": "einmalig"
+  },
+  "language_switcher": {
+    "de": "Deutsch",
+    "en": "English"
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "nav": {
+    "products": "Products",
+    "about": "About",
+    "blog": "Blog",
+    "github": "GitHub",
+    "contact": "Contact",
+    "cta": "Get started"
+  },
+  "hero": {
+    "badge": "Self-hosted AI Infrastructure",
+    "headline": "Build your own AI stack — fully self-hosted",
+    "subheadline": "Production-ready guides, workflows & tools for homelab operators and privacy-conscious teams.",
+    "cta_primary": "See products",
+    "cta_secondary": "View on GitHub",
+    "trust_badges": {
+      "gdpr": "GDPR-compliant by design",
+      "self_hosted": "100% self-hosted",
+      "open_source": "Open Source"
+    }
+  },
+  "products": {
+    "section_title": "Products",
+    "section_subtitle": "Battle-tested tools from a production system",
+    "free_badge": "FREE",
+    "items": {
+      "ai_blueprint": {
+        "title": "AI Agent Team Blueprint",
+        "subtitle": "Real architecture from a production system. 4 Claude agents, Mattermost as hub, n8n for automation.",
+        "short_desc": "Complete blueprint: 4 Claude agents + Mattermost hub. Templates, code, security rules from a production system. Ready to use.",
+        "price": "EUR 19",
+        "cta": "Get it on Gumroad",
+        "tags": ["claude", "multi-agent", "mattermost", "n8n", "blueprint"]
+      },
+      "n8n_bundle": {
+        "title": "n8n Starter Bundle",
+        "subtitle": "AI automation for European businesses — no OpenAI dependency, fully self-hosted.",
+        "short_desc": "3 battle-tested n8n workflows: Stripe delivery, local AI (Ollama), GDPR Art.30 register. GDPR-safe, self-hosted, ready to import.",
+        "price": "EUR 29",
+        "cta": "Get it on Gumroad",
+        "tags": ["n8n", "automation", "gdpr", "ollama", "stripe"]
+      },
+      "grafana_pack": {
+        "title": "Grafana Dashboard Pack",
+        "subtitle": "Battle-tested monitoring dashboards for homelab & DevOps — Docker Swarm, Prometheus, Node Exporter.",
+        "short_desc": "6 Grafana dashboards: Infrastructure, Docker Swarm, Node Exporter, Network, Services, Alerts. Import & done. Prometheus-ready.",
+        "price": "EUR 39",
+        "cta": "Get it on Gumroad",
+        "tags": ["grafana", "prometheus", "monitoring", "homelab", "docker"]
+      },
+      "gdpr_bundle": {
+        "title": "GDPR Art.30 Compliance Bundle",
+        "subtitle": "n8n workflow with REST API — set up once, document your data processing activities properly.",
+        "short_desc": "GDPR Art.30 compliant processing register as n8n workflow. Validates all mandatory fields. Self-hosted, no cloud dependency.",
+        "price": "EUR 79",
+        "cta": "Get it on Gumroad",
+        "tags": ["gdpr", "compliance", "n8n", "self-hosted", "eu"]
+      },
+      "playbook": {
+        "title": "Playbook01: The Local AI Stack",
+        "subtitle": "Build a production-ready, fully self-hosted AI infrastructure — Proxmox, Docker Swarm, n8n, Ollama, Mattermost, and more.",
+        "short_desc": "Complete guide to building your own local AI stack. Proxmox + Docker Swarm + n8n + Ollama. No cloud needed.",
+        "price": "EUR 49",
+        "cta": "Get the Playbook",
+        "tags": ["homelab", "proxmox", "docker", "ollama", "self-hosted"]
+      },
+      "mcp_bundle": {
+        "title": "Homelab MCP Bundle",
+        "subtitle": "Give Claude (or any AI) full access to your homelab — Proxmox, n8n, Mattermost, Uptime Kuma, Ollama, Grafana, Portainer, AdGuard.",
+        "short_desc": "8 open-source MCP servers, 51 tools. Connect Claude to your entire homelab stack. MIT licensed.",
+        "price": "FREE",
+        "cta": "View on GitHub",
+        "tags": ["mcp", "open-source", "homelab", "claude", "free"]
+      }
+    }
+  },
+  "about": {
+    "section_title": "About",
+    "headline": "Built by engineers, for engineers",
+    "body": "AI-Engineering.at creates production-ready tools and guides for self-hosted AI infrastructure. Everything we sell, we run ourselves — in a live homelab with real workloads.",
+    "values": {
+      "self_hosted": {
+        "title": "Self-hosted first",
+        "desc": "No lock-in. Your data stays on your servers."
+      },
+      "gdpr": {
+        "title": "GDPR by design",
+        "desc": "Built for European teams. No US cloud dependencies."
+      },
+      "production": {
+        "title": "Production-tested",
+        "desc": "Everything runs in our own production environment before we ship it."
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Self-hosted AI infrastructure — built for the real world.",
+    "links": {
+      "imprint": "Imprint",
+      "privacy": "Privacy Policy",
+      "github": "GitHub",
+      "gumroad": "Gumroad Store"
+    },
+    "copyright": "© 2026 AI-Engineering.at — All rights reserved."
+  },
+  "common": {
+    "learn_more": "Learn more",
+    "view_all": "View all products",
+    "back": "Back",
+    "close": "Close",
+    "open_source": "Open Source",
+    "self_hosted": "Self-hosted",
+    "gdpr_compliant": "GDPR-compliant",
+    "production_ready": "Production-ready",
+    "free": "Free",
+    "per_once": "one-time"
+  },
+  "language_switcher": {
+    "de": "Deutsch",
+    "en": "English"
+  }
+}
