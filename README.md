@@ -1,13 +1,103 @@
-# Homelab MCP Bundle — 8 Free MCP Servers for Claude Desktop
+<div align="center">
+  <img src="docs/images/hero-banner.png" alt="AI Engineering — Homelab MCP Bundle" width="100%" />
+</div>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Stars](https://img.shields.io/github/stars/AI-Engineerings-at/homelab-mcp-bundle?style=flat&color=gold)](https://github.com/AI-Engineerings-at/homelab-mcp-bundle/stargazers)
-[![MCP Compatible](https://img.shields.io/badge/MCP-Claude%20Desktop-brightgreen.svg)](https://modelcontextprotocol.io/)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
+<div align="center">
+
+# Homelab MCP Bundle
 
 **Control your entire homelab through natural language. No more switching tabs.**
 
-Ask Claude "Are all my services up?" and get a live status across Portainer, Uptime Kuma, Proxmox, n8n, AdGuard, Grafana, Ollama, and Mattermost — all from one conversation.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Stars](https://img.shields.io/github/stars/AI-Engineerings-at/homelab-mcp-bundle?style=flat&color=gold)](https://github.com/AI-Engineerings-at/homelab-mcp-bundle/stargazers)
+[![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-brightgreen.svg)](https://modelcontextprotocol.io/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
+[![Services](https://img.shields.io/badge/Services-8-blueviolet.svg)](#services)
+[![Docker](https://img.shields.io/badge/Docker-Supported-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com/)
+
+[English](#) | [Deutsch](./README-DE.md)
+
+</div>
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Services](#services)
+- [Quick Install](#quick-install)
+- [Natural Language Examples](#natural-language-examples)
+- [Requirements](#requirements)
+- [Individual Server Docs](#individual-server-docs)
+- [Get the Full Homelab AI Stack](#get-the-full-homelab-ai-stack)
+- [FAQ](#faq)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Overview
+
+8 production-tested MCP servers. 40+ tools. Zero external dependencies beyond `mcp`.
+
+Ask Claude *"Are all my services up?"* and get a live status across Portainer, Uptime Kuma, Proxmox, n8n, AdGuard, Grafana, Ollama, and Mattermost — all from one conversation.
+
+No cloud. No proxy. No data leaves your network. Each server is independent — use only the ones that match your stack.
+
+---
+
+## Architecture
+
+```mermaid
+graph LR
+    CD["Claude Desktop"]
+
+    CD -->|stdio / MCP| MM["Mattermost MCP"]
+    CD -->|stdio / MCP| N8["n8n MCP"]
+    CD -->|stdio / MCP| PX["Proxmox MCP"]
+    CD -->|stdio / MCP| UK["Uptime Kuma MCP"]
+    CD -->|stdio / MCP| OL["Ollama MCP"]
+    CD -->|stdio / MCP| PT["Portainer MCP"]
+    CD -->|stdio / MCP| AG["AdGuard MCP"]
+    CD -->|stdio / MCP| GR["Grafana MCP"]
+
+    MM -->|REST API| MM_S["Mattermost"]
+    N8 -->|REST API| N8_S["n8n"]
+    PX -->|REST API| PX_S["Proxmox VE"]
+    UK -->|REST API| UK_S["Uptime Kuma"]
+    OL -->|REST API| OL_S["Ollama"]
+    PT -->|REST API| PT_S["Portainer"]
+    AG -->|REST API| AG_S["AdGuard Home"]
+    GR -->|REST API| GR_S["Grafana"]
+
+    style CD fill:#6366f1,stroke:#4f46e5,color:#fff
+    style MM fill:#1e88e5,stroke:#1565c0,color:#fff
+    style N8 fill:#ff6d00,stroke:#e65100,color:#fff
+    style PX fill:#e6a117,stroke:#c68a00,color:#fff
+    style UK fill:#5cdd8b,stroke:#34b36a,color:#fff
+    style OL fill:#333,stroke:#555,color:#fff
+    style PT fill:#13bef9,stroke:#0d9fd8,color:#fff
+    style AG fill:#68bc71,stroke:#4a9d52,color:#fff
+    style GR fill:#f46800,stroke:#cc5700,color:#fff
+```
+
+Each MCP server runs as a local Python process started and managed by Claude Desktop. Claude sends tool calls via the [MCP protocol](https://modelcontextprotocol.io/) (stdio), and each server translates them into direct REST API calls to your self-hosted service.
+
+---
+
+## Services
+
+| # | Server | Tools | Capabilities | Example Prompt |
+|:-:|--------|:-----:|-------------|----------------|
+| 1 | [Portainer MCP](./portainer-mcp/) | 5 | List stacks, services, containers; tail logs; inspect health | *"Show all running Docker Swarm services"* |
+| 2 | [Proxmox MCP](./proxmox-mcp/) | 6 | List VMs/LXCs, node status, resource usage, start/stop/reboot | *"How loaded is my Proxmox node right now?"* |
+| 3 | [n8n MCP](./n8n-mcp/) | 5 | List workflows, trigger executions, check failures, manage state | *"Which n8n workflows failed today?"* |
+| 4 | [Ollama MCP](./ollama-mcp/) | 4 | List models, pull/delete models, generate completions | *"Summarize this log file with llama3"* |
+| 5 | [Uptime Kuma MCP](./uptime-kuma-mcp/) | 3 | Monitor status, uptime percentages, outage detection | *"Are all my services up?"* |
+| 6 | [Mattermost MCP](./mattermost-mcp/) | 5 | Post messages, read channels, search history, list teams | *"Post 'Deployment done' to #general"* |
+| 7 | [AdGuard Home MCP](./adguard-mcp/) | 6 | DNS stats, block/unblock domains, query log, filter management | *"How many DNS queries were blocked today?"* |
+| 8 | [Grafana MCP](./grafana-mcp/) | 6 | List dashboards, check alerts, run PromQL, add annotations | *"Are there any firing Grafana alerts?"* |
 
 ---
 
@@ -111,62 +201,6 @@ Restart Claude Desktop — the servers appear as tools automatically.
 
 ---
 
-## What's Inside
-
-8 production-tested MCP servers. 40 tools. Zero external dependencies beyond `mcp`.
-
-| Server | Tools | What you can say |
-|--------|:-----:|-----------------|
-| [portainer-mcp](./portainer-mcp/) | 5 | "Show all running Docker Swarm services" / "Which container has the most restarts?" / "Tail the logs for my n8n service" |
-| [proxmox-mcp](./proxmox-mcp/) | 6 | "List all VMs across my cluster" / "How loaded is pve3 right now?" / "Reboot the UbuntuDesktop VM" |
-| [n8n-mcp](./n8n-mcp/) | 5 | "Which workflows failed today?" / "Trigger the daily report workflow" / "Show me all active automations" |
-| [ollama-mcp](./ollama-mcp/) | 4 | "Summarize this log file with llama3" / "What models do I have locally?" / "Pull mistral:7b" |
-| [uptime-kuma-mcp](./uptime-kuma-mcp/) | 3 | "Are all my services up?" / "What's the uptime for Grafana this month?" / "Show me anything that's currently down" |
-| [mattermost-mcp](./mattermost-mcp/) | 5 | "Post 'Deployment done' to #general" / "What did the team write in #devops today?" / "Search for messages about the last outage" |
-| [adguard-mcp](./adguard-mcp/) | 6 | "How many DNS queries were blocked today?" / "Block ads.youtube-nocookie.com" / "What's my current blocklist count?" |
-| [grafana-mcp](./grafana-mcp/) | 6 | "Are there any firing alerts?" / "Run a PromQL query for CPU usage" / "Add an annotation to the dashboard for tonight's maintenance" |
-
----
-
-## How It Works
-
-Each MCP server runs as a local Python process started and managed by Claude Desktop. Claude sends tool calls via the MCP protocol (stdio), and each server translates them into direct REST API calls to your self-hosted service.
-
-```
-Claude Desktop (your laptop)
-        |
-        +--[stdio]--> portainer-mcp  --[HTTP]--> Portainer  --> Docker Swarm
-        +--[stdio]--> proxmox-mcp    --[HTTPS]--> Proxmox VE API
-        +--[stdio]--> n8n-mcp        --[HTTP]--> n8n REST API v1
-        +--[stdio]--> ollama-mcp     --[HTTP]--> Ollama (local LLMs)
-        +--[stdio]--> uptime-kuma-mcp --[HTTP]--> Uptime Kuma Status API
-        +--[stdio]--> mattermost-mcp --[HTTP]--> Mattermost REST API v4
-        +--[stdio]--> adguard-mcp    --[HTTP]--> AdGuard Home REST API
-        +--[stdio]--> grafana-mcp    --[HTTP]--> Grafana HTTP API + PromQL
-```
-
-No cloud. No proxy. No data leaves your network. Each server is independent — use only the ones that match your stack.
-
----
-
-## Requirements
-
-- **Claude Desktop** (with MCP support enabled)
-- **Python 3.9+** and `pip install mcp` (the only library dependency)
-- **Self-hosted services** you want to connect:
-  - Portainer CE or BE (Docker Swarm or standalone)
-  - Proxmox VE (any recent version)
-  - n8n (self-hosted, API key enabled)
-  - Ollama (local LLM runtime)
-  - Uptime Kuma (status page configured)
-  - Mattermost (self-hosted, bot token)
-  - AdGuard Home
-  - Grafana + Prometheus
-
-You don't need all of them — each server is fully independent.
-
----
-
 ## Natural Language Examples
 
 ```
@@ -200,6 +234,24 @@ You don't need all of them — each server is fully independent.
 
 ---
 
+## Requirements
+
+- **Claude Desktop** (with MCP support enabled)
+- **Python 3.9+** and `pip install mcp` (the only library dependency)
+- **Self-hosted services** you want to connect:
+  - Portainer CE or BE (Docker Swarm or standalone)
+  - Proxmox VE (any recent version)
+  - n8n (self-hosted, API key enabled)
+  - Ollama (local LLM runtime)
+  - Uptime Kuma (status page configured)
+  - Mattermost (self-hosted, bot token)
+  - AdGuard Home
+  - Grafana + Prometheus
+
+You don't need all of them — each server is fully independent.
+
+---
+
 ## Individual Server Docs
 
 - [Portainer MCP](./portainer-mcp/README.md)
@@ -228,11 +280,65 @@ Includes:
 
 ---
 
-## License
+## FAQ
 
-MIT — see [LICENSE](./LICENSE)
+<details>
+<summary><strong>Do I need a cloud LLM or a paid API?</strong></summary>
 
-Free to use, modify, and distribute. Attribution appreciated but not required.
+No cloud required. Every server in this bundle makes direct HTTP calls to your self-hosted services — nothing ever leaves your network. The `ollama-mcp` server connects to a local Ollama instance running on your own hardware. You can run the entire stack completely offline. The only "cloud" component is Claude Desktop itself, which runs the MCP servers locally on your machine.
+</details>
+
+<details>
+<summary><strong>What version of Claude Desktop is required?</strong></summary>
+
+Any version of Claude Desktop that supports MCP (Model Context Protocol). MCP support was introduced in late 2024. If your Claude Desktop shows a "Tools" section and allows you to configure `mcpServers` in the config file, it will work. Check [modelcontextprotocol.io](https://modelcontextprotocol.io/) for the latest compatibility information.
+</details>
+
+<details>
+<summary><strong>Can I use these servers without having all 8 services running?</strong></summary>
+
+Yes. Each MCP server is completely independent. You can use one, three, or all eight — Claude Desktop only starts the servers you configure. If you only run Proxmox and Grafana, just add those two to your `claude_desktop_config.json` and ignore the rest. There are no shared dependencies between servers.
+</details>
+
+<details>
+<summary><strong>How do I update the servers after pulling new changes?</strong></summary>
+
+```bash
+cd homelab-mcp-bundle
+git pull
+```
+
+Then restart Claude Desktop. The servers are plain Python scripts — there is nothing to compile or rebuild. Claude Desktop starts a fresh process for each server on every launch, so the new code takes effect immediately after restart.
+</details>
+
+<details>
+<summary><strong>Can I use these MCP servers with Claude.ai in the browser?</strong></summary>
+
+No. MCP is a local protocol that runs between Claude Desktop (the native app) and local server processes on your machine. It is not available in the Claude.ai web interface. You need the Claude Desktop app installed on your computer to use MCP servers.
+</details>
+
+<details>
+<summary><strong>My service is not in this bundle. How do I build a custom MCP server?</strong></summary>
+
+See the [CONTRIBUTING.md](./CONTRIBUTING.md) for a complete step-by-step guide with a working skeleton. The short version:
+
+1. Create a new directory `your-service-mcp/`
+2. Copy the structure from `portainer-mcp/` as a starting template
+3. Replace the API calls with your service's REST API
+4. Add your tool functions decorated with `@mcp.tool()`
+5. Add it to your Claude Desktop config
+
+Any service with a REST API can be wrapped in an MCP server this way. The whole thing typically takes under an hour for a simple service.
+</details>
+
+<details>
+<summary><strong>Does this work on Windows?</strong></summary>
+
+Yes, via two approaches:
+
+- **WSL2 (recommended)**: Run the Python servers inside Windows Subsystem for Linux. The Claude Desktop config on Windows uses the WSL path format: `wsl.exe python3 /home/user/homelab-mcp-bundle/portainer-mcp/server.py`. This is the most reliable approach.
+- **Native Python on Windows**: Install Python 3.9+ from python.org, run `pip install mcp`, and use Windows-style paths in your config. All servers use only the standard library plus `mcp`, so there are no Linux-only dependencies.
+</details>
 
 ---
 
@@ -246,60 +352,8 @@ Star this repo if it saved you time. It helps others find it.
 
 ---
 
-## FAQ
+## License
 
-**Do I need a cloud LLM or a paid API? Can I use Ollama locally?**
+MIT — see [LICENSE](./LICENSE)
 
-No cloud required. Every server in this bundle makes direct HTTP calls to your self-hosted services — nothing ever leaves your network. The `ollama-mcp` server connects to a local Ollama instance running on your own hardware. You can run the entire stack completely offline. The only "cloud" component is Claude Desktop itself, which runs the MCP servers locally on your machine.
-
----
-
-**What version of Claude Desktop is required?**
-
-Any version of Claude Desktop that supports MCP (Model Context Protocol). MCP support was introduced in late 2024. If your Claude Desktop shows a "Tools" section and allows you to configure `mcpServers` in the config file, it will work. Check [modelcontextprotocol.io](https://modelcontextprotocol.io/) for the latest compatibility information.
-
----
-
-**Can I use these servers without having all 8 services running?**
-
-Yes. Each MCP server is completely independent. You can use one, three, or all eight — Claude Desktop only starts the servers you configure. If you only run Proxmox and Grafana, just add those two to your `claude_desktop_config.json` and ignore the rest. There are no shared dependencies between servers.
-
----
-
-**How do I update the servers after pulling new changes?**
-
-```bash
-cd homelab-mcp-bundle
-git pull
-```
-
-Then restart Claude Desktop. The servers are plain Python scripts — there is nothing to compile or rebuild. Claude Desktop starts a fresh process for each server on every launch, so the new code takes effect immediately after restart.
-
----
-
-**Can I use these MCP servers with Claude.ai in the browser?**
-
-No. MCP is a local protocol that runs between Claude Desktop (the native app) and local server processes on your machine. It is not available in the Claude.ai web interface. You need the Claude Desktop app installed on your computer to use MCP servers.
-
----
-
-**My service is not in this bundle. How do I build a custom MCP server?**
-
-It is straightforward. See the [CONTRIBUTING.md](./CONTRIBUTING.md) for a complete step-by-step guide with a working skeleton. The short version:
-
-1. Create a new directory `your-service-mcp/`
-2. Copy the structure from `portainer-mcp/` as a starting template
-3. Replace the API calls with your service's REST API
-4. Add your tool functions decorated with `@mcp.tool()`
-5. Add it to your Claude Desktop config
-
-Any service with a REST API can be wrapped in an MCP server this way. The whole thing typically takes under an hour for a simple service.
-
----
-
-**Does this work on Windows?**
-
-Yes, via two approaches:
-
-- **WSL2 (recommended)**: Run the Python servers inside Windows Subsystem for Linux. The Claude Desktop config on Windows uses the WSL path format: `wsl.exe python3 /home/user/homelab-mcp-bundle/portainer-mcp/server.py`. This is the most reliable approach.
-- **Native Python on Windows**: Install Python 3.9+ from python.org, run `pip install mcp`, and use Windows-style paths in your config: `C:\Users\you\homelab-mcp-bundle\portainer-mcp\server.py`. All servers use only the standard library plus `mcp`, so there are no Linux-only dependencies.
+Free to use, modify, and distribute. Attribution appreciated but not required.
